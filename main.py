@@ -1,4 +1,5 @@
 # El desafío es poder procesar lo que emite Simian...
+# main.py recogerá los datos en una sola mega DataFRAME
 
 import json
 
@@ -40,4 +41,4 @@ print(df)
 #------------------------------------------------------------------------------------------------------
 
 
-df.to_excel('Output1.xlsx')
+df.to_excel('MergedDataFrame.xlsx')
