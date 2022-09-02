@@ -3,10 +3,24 @@ import seaborn as sns   #Estetica de gráficos
 import matplotlib.pyplot as plt    #Graficos
 
 
-# Cargamos La base de datos como "m_df" --> Main Data Frame
+#   Cargamos La base de datos como "m_df" --> Main Data Frame
+#   en el script "main.py" de este Directorio haremos
+#   lo necesario para crear dicha base de datos en un xlsx que cargaremos aqui.
 m_df = pd.read_excel('MergedDataFrame.xlsx', index_col=0)
 
+#------------------------------
+#   Micro script para obtener los valores máximos de la vuelta olímpica
+#   Necesita una recorrida limpia de toda la piscina en circular
+#t_df = m_df['P_position_x']
+#max_x = t_df.max()
+#print('Maximo: ',max_x)
+#   Como resultado en nuestra versión de Simian obtuvimos que la piscina mide
+#   280 unidades originales de radio.
+#------------------------------
+
+
 #Ensayo de gráfico de "paths"
+
 ax = sns.lineplot(x="P_position_x", y="P_position_y",hue="Trial", data=m_df, linewidth=3, alpha = 0.8, legend='full', sort= False)
 sns.set_context("paper", rc={"font.size":20,"axes.titlesize":20,"axes.labelsize":18})
 sns.set_palette('Blues',7)

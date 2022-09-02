@@ -37,8 +37,14 @@ PosCluymn = pd.Series(PosColumn)
 df = df.assign(Positions = PosCluymn)
 order = [0,7,4,5,6,1,2,3] # setting column's order
 df = df[[df.columns[i] for i in order]]
-print(df)
 #------------------------------------------------------------------------------------------------------
+
+# Ahora transformaremos los datos de posición y tamaño de plataforma a "Pool Diameter"
+# como unidad de medida. Después de un analisis de un ensayo "vuelta olímpica, determinamos que
+# el Diametro de la piscina son 280x2 = 560 unidades virturales asi que:
+def normalizar_a_PD(uvirtuales):
+    return (uvirtuales/560)
+
 
 
 df.to_excel('MergedDataFrame.xlsx')
