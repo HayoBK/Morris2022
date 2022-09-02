@@ -44,7 +44,7 @@ df = df[[df.columns[i] for i in order]]
 # el Diametro de la piscina son 280x2 = 560 unidades virturales asi que:
 def normalizar_a_PD(uvirtuales):
     return (uvirtuales/560)
-
-
+df[['P_position_x','P_position_y','platformPosition.x','platformPosition.y']] = df[['P_position_x','P_position_y','platformPosition.x','platformPosition.y']].apply(normalizar_a_PD)
+print(df)
 
 df.to_excel('MergedDataFrame.xlsx')

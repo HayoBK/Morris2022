@@ -25,22 +25,22 @@ ax = sns.lineplot(x="P_position_x", y="P_position_y",hue="Trial", data=m_df, lin
 sns.set_context("paper", rc={"font.size":20,"axes.titlesize":20,"axes.labelsize":18})
 sns.set_palette('Blues',7)
 sns.set_style('whitegrid')
-ax.set(xlabel = 'East-West (virtual units)', ylabel= 'North-South (virtual units)', title = 'Test-Run')
-plt.show()
-
-
-ax = sns.lineplot(x="P_position_x", y="P_position_y",hue="Trial", data=m_df, linewidth=3, alpha = 0.8, legend='full', sort= False)
-circle= plt.Circle((0.5,0.5),0.4, color='b',fill=False)
-rectA = plt.Rectangle(((0.33-0.07),(0.43-0.07)),0.09,0.09,linewidth=1,edgecolor='b',facecolor='none')
-rectB = plt.Rectangle(((0.85-0.09),(0.40-0.09)),0.09,0.09,linewidth=1,edgecolor='b',facecolor='none')
-rectC = plt.Rectangle(((0.31-0.09),(0.51-0.09)),0.09,0.09,linewidth=1,edgecolor='b',facecolor='none')
+circle= plt.Circle((0,0),0.5, color='b',fill=False)
 ax.add_artist(circle)
-#ax.add_artist(rectA)
-#ax.add_artist(rectB)
-ax.add_artist(rectC)
-ax.set(ylim=(0,1),xlim=(0,1), aspect=1)
-
+ax.set(ylim=(-0.5,0.5),xlim=(-0.5,0.5), aspect=1)
+ax.set(xlabel = 'East-West (virtual units)', ylabel= 'North-South (virtual units)', title = 'Test-Run')
 ax.figure.set_size_inches(7,7)
 ax.tick_params(labelsize = 13)
 ax.legend(frameon = False, loc='right', bbox_to_anchor=(1.3,0.5), fontsize = 13)
 plt.show()
+
+
+ax = sns.lineplot(x="P_position_x", y="P_position_y",hue="Trial", data=m_df, linewidth=3, alpha = 0.8, legend='full', sort= False)
+
+rectA = plt.Rectangle(((0.33-0.07),(0.43-0.07)),0.09,0.09,linewidth=1,edgecolor='b',facecolor='none')
+rectB = plt.Rectangle(((0.85-0.09),(0.40-0.09)),0.09,0.09,linewidth=1,edgecolor='b',facecolor='none')
+rectC = plt.Rectangle(((0.31-0.09),(0.51-0.09)),0.09,0.09,linewidth=1,edgecolor='b',facecolor='none')
+
+#ax.add_artist(rectA)
+#ax.add_artist(rectB)
+ax.add_artist(rectC)
