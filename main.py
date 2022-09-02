@@ -6,7 +6,7 @@ import json
 import pandas as pd
 
 #Abrir el archivo ".motion"... aqui lo modifique ya a .json
-with open("Navi360.motion", "r") as read_file:
+with open("Navi.json", "r") as read_file:
     data = json.load(read_file)
 
 #------------------------------------------------------------------------------------------------------
