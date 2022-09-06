@@ -52,9 +52,10 @@ def read_Navi_Motion_File(archivo):
         normalizar_a_PD)
     return df
 
-def Asignar_TrueTrialsNames(row):
+def Label_TrueTrialNames(row):
     Trial_Name = 'No asignado - error'
-    #if row['']
+    if (row['Bloque']=='A') and (row['Trial']==0):
+        Trial_Name = 'FreeNav'
     return Trial_Name
 
 home= str(Path.home()) # Obtener el directorio raiz en cada computador distinto
@@ -77,7 +78,7 @@ for Px in Px_list:
         Bloque = tail[5] #esto es super especifico. el caracter [5] del nombre del archivo motion es A,B,C o D describiendo el bloque que usamos.
         Trial_uID +=100
         t_df.insert(1,'Origen',tail) #incorporamos el nombre del archivo de origen al DataFrame
-        t_df.insert(1,'Trial Unique-ID',Trial_uID)
+        t_df.insert(1,'Trial Unique-ID',Trial_uID + t_df['Trial'])
         t_df.insert(0,'Bloque',Bloque) #incorporamos el bloque de origen al DataFrame
         df_list.append(t_df) #añadimos el Dataframe a la lista que teniamo
         print('Anexado:  ',Px,'-',Bloque,'-',tail) #solo un reporte de como va la cosa.
@@ -86,9 +87,9 @@ for Px in Px_list:
     df_full_list.append(t_df) #lo añadimos a la megalista de los dataframes
 
 df = pd.concat(df_full_list) #y juntamos todos los dataframes de todos los pacientes en un solo df
-
-
-
+df['True Block'] = df.apply(lambda row: Label_TrueTrialNames(row), axis=1)
+column = df.pop('True Block')
+df.insert(1,'True Block',column)
 
 df.to_excel('MergedDataFrame.xlsx')  #y lo exportamos
 print('Todo listo')
