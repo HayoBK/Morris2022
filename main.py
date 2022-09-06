@@ -64,7 +64,7 @@ BaseDir=home+"/OneDrive/2-Casper/00-CurrentResearch/001-FONDECYT_11200469/002-LU
 Px_list = ['P06','P12'] # Lista de pacientes a incorporar en el análisis.
 
 #----------------------------------------------------
-
+Trial_uID = 0
 df_full_list =[] # Lista que albergara el DataFrame completo de cada paciente
 for Px in Px_list:
     Searchfiles = BaseDir + Px + '/SimianMaze_No_Inmersivo/*.motion' #Vamos a buscar los archivos Motion en el directorio de cada paciente
@@ -75,7 +75,9 @@ for Px in Px_list:
         t_df = read_Navi_Motion_File(Navi_f)  #Aqui llamamos a nuesto super FUNCTION que definimos al principio del archivo y que des-json-iza un .motion a un Pandas DataFrame
         head, tail = os.path.split(Navi_f)  #Esto es para obtener solo el nombre del archivo y perder su directorio
         Bloque = tail[5] #esto es super especifico. el caracter [5] del nombre del archivo motion es A,B,C o D describiendo el bloque que usamos.
+        Trial_uID +=100
         t_df.insert(1,'Origen',tail) #incorporamos el nombre del archivo de origen al DataFrame
+        t_df.insert(1,'Trial Unique-ID',Trial_uID)
         t_df.insert(0,'Bloque',Bloque) #incorporamos el bloque de origen al DataFrame
         df_list.append(t_df) #añadimos el Dataframe a la lista que teniamo
         print('Anexado:  ',Px,'-',Bloque,'-',tail) #solo un reporte de como va la cosa.
