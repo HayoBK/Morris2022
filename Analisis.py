@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt    #Graficos
 #   Cargamos La base de datos como "m_df" --> Main Data Frame
 #   en el script "main.py" de este Directorio haremos
 #   lo necesario para crear dicha base de datos en un xlsx que cargaremos aqui.
-m_df = pd.read_excel('MergedDataFrame.xlsx', index_col=0)
+m_df = pd.read_csv('MergedDataFrame.csv', index_col=0)
 
 #------------------------------
 #   Micro script para obtener los valores máximos de la vuelta olímpica

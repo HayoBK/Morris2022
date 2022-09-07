@@ -94,18 +94,10 @@ def Label_TrueTrialNumber(row):
         TrueTrialNumber = row['Trial']+1
 
     return TrueTrialNumber
-home= str(Path.home()) # Obtener el directorio raiz en cada computador distinto
-BaseDir=home+"/OneDrive/2-Casper/00-CurrentResearch/001-FONDECYT_11200469/002-LUCIEN/SUJETOS/" # Esto evidentemente varia. puede que no varié de compu a compu de Hayo
-#----------------------------------------------------
 
-Px_list = ['P06','P12'] # Lista de pacientes a incorporar en el análisis.
-
-#----------------------------------------------------
-Trial_uID = 0
-df_full_list =[] # Lista que albergara el DataFrame completo de cada paciente
-for Px in Px_list:
-    Searchfiles = BaseDir + Px + '/SimianMaze_No_Inmersivo/*.motion' #Vamos a buscar los archivos Motion en el directorio de cada paciente
-    Navi_files = glob2.glob(Searchfiles)
+def GrabMotion(searchfiles):
+    global Trial_uID
+    Navi_files = glob2.glob(searchfiles)
     Navi_files = sorted(Navi_files) #Esto ordena los archivos alfabeticamente
     df_list =[]   #preparamos una lista de los DataFrames que emergeran de cada archivo .motion
     for Navi_f in Navi_files:
@@ -120,15 +112,33 @@ for Px in Px_list:
         print('Anexado:  ',Px,'-',Bloque,'-',tail) #solo un reporte de como va la cosa.
     t_df = pd.concat(df_list) #juntamos todos los dataframes de un unico paciente.
     t_df.insert(0,'Sujeto',Px) #le añadimos una columna descriptora
-    df_full_list.append(t_df) #lo añadimos a la megalista de los dataframes
+    return t_df
+
+home= str(Path.home()) # Obtener el directorio raiz en cada computador distinto
+BaseDir=home+"/OneDrive/2-Casper/00-CurrentResearch/001-FONDECYT_11200469/002-LUCIEN/SUJETOS/" # Esto evidentemente varia. puede que no varié de compu a compu de Hayo
+#----------------------------------------------------
+
+Px_list = ['P06','P12'] # Lista de pacientes a incorporar en el análisis.
+
+#----------------------------------------------------
+Trial_uID = 0
+df_full_list =[] # Lista que albergara el DataFrame completo de cada paciente
+for Px in Px_list:
+    #Primero de los No inmersivo
+    Searchfiles = BaseDir + Px + '/SimianMaze_No_Inmersivo/*.motion' #Vamos a buscar los archivos Motion en el directorio de cada paciente
+    partial_df = GrabMotion(Searchfiles)
+    partial_df.insert(1, 'Modalidad', 'No Inmersivo')
+    df_full_list.append(partial_df) #lo añadimos a la megalista de los dataframes
+    #Luego repetimos en realidad virtual
+
 
 df = pd.concat(df_full_list) #y juntamos todos los dataframes de todos los pacientes en un solo df
 df['True Block'] = df.apply(lambda row: Label_TrueTrialNames(row), axis=1)
 column = df.pop('True Block')
-df.insert(1,'True Block',column)
+df.insert(2,'True Block',column)
 df['True Trial'] = df.apply(lambda row: Label_TrueTrialNumber(row), axis=1)
 column = df.pop('True Trial')
-df.insert(2,'True Trial',column)
+df.insert(3,'True Trial',column)
 
-df.to_excel('MergedDataFrame.xlsx')  #y lo exportamos
+df.to_csv('MergedDataFrame.csv')  #y lo exportamos
 print('Todo listo')
