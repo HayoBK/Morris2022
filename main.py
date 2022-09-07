@@ -52,12 +52,48 @@ def read_Navi_Motion_File(archivo):
         normalizar_a_PD)
     return df
 
-def Label_TrueTrialNames(row):
+def Label_TrueTrialNames(row): #Con las proximas dos funciones asignamos los nombres "reales" de los blockes y los trials a los Bloque sy trials generados por el archivo motion
     Trial_Name = 'No asignado - error'
     if (row['Bloque']=='A') and (row['Trial']==0):
         Trial_Name = 'FreeNav'
+    if (row['Bloque']=='A') and (row['Trial']==1):
+        Trial_Name = 'Training'
+    if (row['Bloque']=='A') and (row['Trial']>1) and (row['Trial']<6):
+        Trial_Name = 'VisibleTarget_1'
+    if (row['Bloque']=='A') and (row['Trial']>5):
+        Trial_Name = 'HiddenTarget_1'
+
+    if (row['Bloque']=='B'):
+        Trial_Name = 'HiddenTarget_2'
+
+    if (row['Bloque']=='C'):
+        Trial_Name = 'HiddenTarget_3'
+
+    if (row['Bloque']=='D'):
+        Trial_Name = 'VisibleTarget_2'
+
+    if (row['Sujeto']=='P01'):
+        Trial_Name = 'Diego'
     return Trial_Name
 
+def Label_TrueTrialNumber(row):
+    TrueTrialNumber = 0 #implica no fue asignado!
+    if (row['True Block']=='FreeNav'):
+        TrueTrialNumber = row['Trial']+1
+    if (row['True Block']=='Training'):
+        TrueTrialNumber = 1
+    if (row['True Block']=='VisibleTarget_1'):
+        TrueTrialNumber = row['Trial']-1
+    if (row['True Block']=='HiddenTarget_1'):
+        TrueTrialNumber = row['Trial']-5
+    if (row['True Block']=='HiddenTarget_2'):
+        TrueTrialNumber = row['Trial']+1
+    if (row['True Block']=='HiddenTarget_3'):
+        TrueTrialNumber = row['Trial']+1
+    if (row['True Block']=='VisibleTarget_2'):
+        TrueTrialNumber = row['Trial']+1
+
+    return TrueTrialNumber
 home= str(Path.home()) # Obtener el directorio raiz en cada computador distinto
 BaseDir=home+"/OneDrive/2-Casper/00-CurrentResearch/001-FONDECYT_11200469/002-LUCIEN/SUJETOS/" # Esto evidentemente varia. puede que no varié de compu a compu de Hayo
 #----------------------------------------------------
@@ -90,6 +126,9 @@ df = pd.concat(df_full_list) #y juntamos todos los dataframes de todos los pacie
 df['True Block'] = df.apply(lambda row: Label_TrueTrialNames(row), axis=1)
 column = df.pop('True Block')
 df.insert(1,'True Block',column)
+df['True Trial'] = df.apply(lambda row: Label_TrueTrialNumber(row), axis=1)
+column = df.pop('True Trial')
+df.insert(2,'True Trial',column)
 
 df.to_excel('MergedDataFrame.xlsx')  #y lo exportamos
 print('Todo listo')
