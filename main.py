@@ -147,3 +147,7 @@ df.insert(3,'True Trial',column)
 
 df.to_csv('MergedDataFrame.csv')  #y lo exportamos
 print('Todo listo')
+
+#e_df=df.groupby(['Sujeto','Modalidad','Trial Unique-ID','True Block','True Trial']).agg({'P_timeMilliseconds': ['max'], 'P_position_x':['var'],'P_position_y':['var']})
+#e_df = e_df.reset_index()
+#print(e_df)
