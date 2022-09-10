@@ -100,6 +100,7 @@ def GrabMotion(searchfiles):
     Navi_files = glob2.glob(searchfiles)
     Navi_files = sorted(Navi_files) #Esto ordena los archivos alfabeticamente
     df_list =[]   #preparamos una lista de los DataFrames que emergeran de cada archivo .motion
+    t_df = pd.DataFrame
     for Navi_f in Navi_files:
         t_df = read_Navi_Motion_File(Navi_f)  #Aqui llamamos a nuesto super FUNCTION que definimos al principio del archivo y que des-json-iza un .motion a un Pandas DataFrame
         head, tail = os.path.split(Navi_f)  #Esto es para obtener solo el nombre del archivo y perder su directorio
@@ -110,8 +111,9 @@ def GrabMotion(searchfiles):
         t_df.insert(0,'Bloque',Bloque) #incorporamos el bloque de origen al DataFrame
         df_list.append(t_df) #añadimos el Dataframe a la lista que teniamo
         print('Anexado:  ',Px,'-',Bloque,'-',tail) #solo un reporte de como va la cosa.
-    t_df = pd.concat(df_list) #juntamos todos los dataframes de un unico paciente.
-    t_df.insert(0,'Sujeto',Px) #le añadimos una columna descriptora
+    if len(df_list)!=0:
+        t_df = pd.concat(df_list) #juntamos todos los dataframes de un unico paciente.
+        t_df.insert(0,'Sujeto',Px) #le añadimos una columna descriptora
     return t_df
 
 home= str(Path.home()) # Obtener el directorio raiz en cada computador distinto
@@ -130,7 +132,10 @@ for Px in Px_list:
     partial_df.insert(1, 'Modalidad', 'No Inmersivo')
     df_full_list.append(partial_df) #lo añadimos a la megalista de los dataframes
     #Luego repetimos en realidad virtual
-
+    Searchfiles = BaseDir + Px + '/SimianMaze_R_Virtual/*.motion' #Vamos a buscar los archivos Motion en el directorio de cada paciente
+    partial_df = GrabMotion(Searchfiles)
+    partial_df.insert(1, 'Modalidad', 'Realidad Virtual')
+    df_full_list.append(partial_df) #lo añadimos a la megalista de los dataframes
 
 df = pd.concat(df_full_list) #y juntamos todos los dataframes de todos los pacientes en un solo df
 df['True Block'] = df.apply(lambda row: Label_TrueTrialNames(row), axis=1)
