@@ -1,4 +1,4 @@
-,Sujeto,Modalidad,True Block,True Trial,Bloque,Trial,Trial_Unique_ID,Origen,Positions,P_timeMilliseconds,P_position_x,P_position_y,platformExists,platformPosition.x,platformPosition.y
+,Sujeto,Modalidad,True_Block,True_Trial,Bloque,Trial,Trial_Unique_ID,Origen,Positions,P_timeMilliseconds,P_position_x,P_position_y,platformExists,platformPosition.x,platformPosition.y
 0,P06,No Inmersivo,FreeNav,1,A,0,100,Navi_A_data_2022_06_23_05_07_39.motion,0,0.0,0.0,-0.26785714285714285,False,0.0,0.0
 1,P06,No Inmersivo,FreeNav,1,A,0,100,Navi_A_data_2022_06_23_05_07_39.motion,1,117.0,0.0,-0.26785714285714285,False,0.0,0.0
 2,P06,No Inmersivo,FreeNav,1,A,0,100,Navi_A_data_2022_06_23_05_07_39.motion,2,234.0,0.0,-0.26785714285714285,False,0.0,0.0

@@ -78,19 +78,19 @@ def Label_TrueTrialNames(row): #Con las proximas dos funciones asignamos los nom
 
 def Label_TrueTrialNumber(row):
     TrueTrialNumber = 0 #implica no fue asignado!
-    if (row['True Block']=='FreeNav'):
+    if (row['True_Block']=='FreeNav'):
         TrueTrialNumber = row['Trial']+1
-    if (row['True Block']=='Training'):
+    if (row['True_Block']=='Training'):
         TrueTrialNumber = 1
-    if (row['True Block']=='VisibleTarget_1'):
+    if (row['True_Block']=='VisibleTarget_1'):
         TrueTrialNumber = row['Trial']-1
-    if (row['True Block']=='HiddenTarget_1'):
+    if (row['True_Block']=='HiddenTarget_1'):
         TrueTrialNumber = row['Trial']-5
-    if (row['True Block']=='HiddenTarget_2'):
+    if (row['True_Block']=='HiddenTarget_2'):
         TrueTrialNumber = row['Trial']+1
-    if (row['True Block']=='HiddenTarget_3'):
+    if (row['True_Block']=='HiddenTarget_3'):
         TrueTrialNumber = row['Trial']+1
-    if (row['True Block']=='VisibleTarget_2'):
+    if (row['True_Block']=='VisibleTarget_2'):
         TrueTrialNumber = row['Trial']+1
 
     return TrueTrialNumber
@@ -138,12 +138,12 @@ for Px in Px_list:
     df_full_list.append(partial_df) #lo añadimos a la megalista de los dataframes
 
 df = pd.concat(df_full_list) #y juntamos todos los dataframes de todos los pacientes en un solo df
-df['True Block'] = df.apply(lambda row: Label_TrueTrialNames(row), axis=1)
-column = df.pop('True Block')
-df.insert(2,'True Block',column)
-df['True Trial'] = df.apply(lambda row: Label_TrueTrialNumber(row), axis=1)
-column = df.pop('True Trial')
-df.insert(3,'True Trial',column)
+df['True_Block'] = df.apply(lambda row: Label_TrueTrialNames(row), axis=1)
+column = df.pop('True_Block')
+df.insert(2,'True_Block',column)
+df['True_Trial'] = df.apply(lambda row: Label_TrueTrialNumber(row), axis=1)
+column = df.pop('True_Trial')
+df.insert(3,'True_Trial',column)
 
 df.to_csv('MergedDataFrame.csv')  #y lo exportamos
 print('Todo listo')
