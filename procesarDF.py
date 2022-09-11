@@ -1,3 +1,9 @@
+# ---------------------------------------------------------
+# Lab ONCE - Septiembre 2022
+# Fondecyt 11200469
+# Hayo Breinbauer
+# ---------------------------------------------------------
+
 import pandas as pd     #Base de datos
 import numpy as np
 
@@ -9,7 +15,7 @@ for col in m_df.columns:
 FirstRow=True
 MegaList = []
 for row in m_df.itertuples():
-    if FirstRow:
+    if FirstRow: #En la primera linea de un Unique Trial
         AssesedTrial = row.Trial_Unique_ID
         FirstRow = False
         S=row.Sujeto
@@ -23,10 +29,11 @@ for row in m_df.itertuples():
         plat = row.platformExists
         platX = row.platformPosition_x
         playY = row.platformPosition_y
-    if AssesedTrial != row.Trial_Unique_ID:
+    if AssesedTrial != row.Trial_Unique_ID:  #Luego de que terminó el unique trial (hay que repetir esto al final del Loop.
         FirstRow = True
         rowList = [S,M,TB,TT,ID,time,plat] #x,y,plat,platX,playY]
         MegaList.append(rowList)
+    # y aquí ponemos lo que ocurre en cada linea intermedia
     time=row.P_timeMilliseconds # voy updateando time para que quede "max" al terminar
 
 rowList = [S,M,TB,TT,ID,time,plat] #x,y,plat,platX,playY]

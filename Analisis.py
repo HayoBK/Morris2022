@@ -1,3 +1,9 @@
+# ---------------------------------------------------------
+# Lab ONCE - Septiembre 2022
+# Fondecyt 11200469
+# Hayo Breinbauer
+# ---------------------------------------------------------
+
 import pandas as pd     #Base de datos
 import numpy as np
 import seaborn as sns   #Estetica de gráficos

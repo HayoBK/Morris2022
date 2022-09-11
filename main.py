@@ -1,3 +1,10 @@
+# ---------------------------------------------------------
+# Lab ONCE - Septiembre 2022
+# Fondecyt 11200469
+# Hayo Breinbauer
+# ---------------------------------------------------------
+
+
 # El desafío es poder procesar lo que emite Simian...
 # main.py recogerá los datos en una sola mega DataFRAME
 
