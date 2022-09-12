@@ -77,6 +77,11 @@ for row in short_df.itertuples():
         Banish_List.append(row.Trial_Unique_ID)
 print(Banish_List)
 
+short_df = short_df[~short_df['Trial_Unique_ID'].isin(Banish_List)]
+
+e_df = short_df.groupby(['Sujeto','Modalidad','True_Block'])['CSE'].agg('count').reset_index()
+print(e_df)
+
 Subj='P06'
 Mod ='Realidad Virtual'
 Plat=True
