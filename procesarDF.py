@@ -77,10 +77,17 @@ for row in short_df.itertuples():
         Banish_List.append(row.Trial_Unique_ID)
 print(Banish_List)
 
+Banish_List.extend([1201])
+
 short_df = short_df[~short_df['Trial_Unique_ID'].isin(Banish_List)]
 
-e_df = short_df.groupby(['Sujeto','Modalidad','True_Block'])['CSE'].agg('count').reset_index()
+e_df = short_df.groupby(['Sujeto','Modalidad','True_Block','True_Trial'])['Trial_Unique_ID'].apply(list).reset_index()
 print(e_df)
+
+print('Trials en conflicto!')
+for row in e_df.itertuples():
+    if len(row.Trial_Unique_ID) > 1:
+        print(row.Sujeto, row.Modalidad, row.True_Block, row.True_Trial, row.Trial_Unique_ID)
 
 Subj='P06'
 Mod ='Realidad Virtual'
