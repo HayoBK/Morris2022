@@ -88,7 +88,9 @@ print('Trials en conflicto!')
 for row in e_df.itertuples():
     if len(row.Trial_Unique_ID) > 1:
         print(row.Sujeto, row.Modalidad, row.True_Block, row.True_Trial, row.Trial_Unique_ID)
-
+        show_df = m_df.loc[ (m_df['Sujeto']==row.Sujeto) & (m_df['Modalidad']==row.Modalidad) & (m_df['True_Block']==row.True_Block) & (m_df['True_Trial']==row.True_Trial)]
+        ax = sns.lineplot(x="P_position_x", y="P_position_y", hue="Trial_Unique_ID", data=show_df, linewidth=3, alpha=0.8, sort=False)  # palette = sns.color_palette('Blues', as_cmap = True),
+        print('check')
 Subj='P06'
 Mod ='Realidad Virtual'
 Plat=True
