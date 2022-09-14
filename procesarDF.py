@@ -77,7 +77,7 @@ for row in short_df.itertuples():
         Banish_List.append(row.Trial_Unique_ID)
 print(Banish_List)
 
-Banish_List.extend([1201])
+Banish_List.extend([1201,2000,2100,1901])
 
 short_df = short_df[~short_df['Trial_Unique_ID'].isin(Banish_List)]
 
@@ -85,16 +85,22 @@ e_df = short_df.groupby(['Sujeto','Modalidad','True_Block','True_Trial'])['Trial
 print(e_df)
 
 print('Trials en conflicto!')
+Conflict = False
 for row in e_df.itertuples():
     if len(row.Trial_Unique_ID) > 1:
+        Conflict = True
         print(row.Sujeto, row.Modalidad, row.True_Block, row.True_Trial, row.Trial_Unique_ID)
-
-Subj='P06'
-Mod ='Realidad Virtual'
-Plat=True
-show_df = short_df.loc[ (short_df['Sujeto']==Subj) & (short_df['Modalidad']==Mod)]
-ax = sns.barplot(x="True_Block", y="Path_length",hue="True_Trial",data=show_df)
-plt.show()
+        show_df = m_df.loc[(m_df['Sujeto'] == row.Sujeto) & (m_df['Modalidad'] == row.Modalidad) & (m_df['True_Block'] == row.True_Block) & (m_df['True_Trial'] == row.True_Trial)]
+        show_df = show_df.reset_index()
+        ax = sns.lineplot(x="P_position_x", y="P_position_y", hue="Trial_Unique_ID", data=show_df, linewidth=3, alpha=0.8, palette = sns.color_palette('Blues', as_cmap = True),sort=False)
+        plt.show()
+        show_df = short_df.loc[(short_df['Sujeto'] == row.Sujeto) & (short_df['Modalidad'] == row.Modalidad) & (short_df['True_Block'] == row.True_Block) & (short_df['True_Trial']
+                                                                                                                                                             ==
+                                                                                                                                               row.True_Trial)]
+        ax = sns.barplot(x="Trial_Unique_ID",y="Path_length", data=show_df)
+        plt.show()
+        print('check')
+print('¿Hubo conflicto? --> ',Conflict)
 #Sujeto
 #Modalidad
 #True Block
