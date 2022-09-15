@@ -80,7 +80,26 @@ def Label_TrueTrialNames(row): #Con las proximas dos funciones asignamos los nom
         Trial_Name = 'VisibleTarget_2'
 
     if (row['Sujeto']=='P01'):
+
         Trial_Name = 'Diego'
+        if (row['Bloque'] == 'A') and (row['Trial'] == 0):
+            Trial_Name = 'FreeNav'
+        if (row['Bloque'] == 'A') and (row['Trial'] == 1):
+            Trial_Name = 'Training'
+        if (row['Bloque'] == 'A') and (row['Trial'] > 1) and (row['Trial'] < 4):
+            Trial_Name = 'VisibleTarget_1'
+        if (row['Bloque'] == 'A') and (row['Trial'] > 3):
+            Trial_Name = 'HiddenTarget_1'
+
+        if (row['Bloque'] == 'B'):
+            Trial_Name = 'HiddenTarget_2'
+
+        if (row['Bloque'] == 'C'):
+            Trial_Name = 'HiddenTarget_3'
+
+        if (row['Bloque'] == 'D'):
+            Trial_Name = 'VisibleTarget_2'
+
     return Trial_Name
 
 def Label_TrueTrialNumber(row):
