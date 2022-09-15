@@ -68,18 +68,21 @@ rowList = [S,M,TB,TT,ID,time,path_length,CSE,plat] #x,y,plat,platX,playY]
 MegaList.append(rowList)
 
 short_df = pd.DataFrame(MegaList, columns = ['Sujeto','Modalidad','True_Block','True_Trial','Trial_Unique_ID','Duration(ms)','Path_length','CSE','Platform_exists'])
-print(short_df)
 
 #Hacer primer barrido para elminar los trials que hay que borrar
 Banish_List=[]
 for row in short_df.itertuples():
     if row.Path_length < 0.0005:
         Banish_List.append(row.Trial_Unique_ID)
-print(Banish_List)
 
+#Aqui añadimos los Unique_IDd trials a borrar manualmente
 Banish_List.extend([1201,2000,2100,1901])
 
 short_df = short_df[~short_df['Trial_Unique_ID'].isin(Banish_List)]
+m_df = m_df[~m_df['Trial_Unique_ID'].isin(Banish_List)]
+#Limpieza completa.
+
+#Iniciamos revisión manual de Trials repetidos por errores, para elegir que UniqueTrials añadir a la lista de Banish Manual.
 
 e_df = short_df.groupby(['Sujeto','Modalidad','True_Block','True_Trial'])['Trial_Unique_ID'].apply(list).reset_index()
 print(e_df)
@@ -101,18 +104,29 @@ for row in e_df.itertuples():
         plt.show()
         print('check')
 print('¿Hubo conflicto? --> ',Conflict)
-#Sujeto
-#Modalidad
-#True Block
-#True Trial
-#Bloque
-#Trial
-#Trial Unique-ID
-#Origen
-#Positions
-#P_timeMilliseconds
-#P_position_x
-#P_position_y
-#platformExists
-#platformPosition.x
-#platformPosition.y
+
+# Ahora enriquecemos la base de datos con datos de los pacientes
+
+codex = pd.read_excel('CODEX.xlsx',index_col=0)
+Codex_Dict = codex.to_dict('series')
+short_df['Edad'] = short_df['Sujeto']
+short_df['Edad'].replace(Codex_Dict['Edad'], inplace=True)
+m_df['Edad'] = m_df['Sujeto']
+m_df['Edad'].replace(Codex_Dict['Edad'], inplace=True)
+short_df['Genero'] = short_df['Sujeto']
+short_df['Genero'].replace(Codex_Dict['Genero'], inplace=True)
+m_df['Genero'] = m_df['Sujeto']
+m_df['Genero'].replace(Codex_Dict['Genero'], inplace=True)
+short_df['Dg'] = short_df['Sujeto']
+short_df['Dg'].replace(Codex_Dict['Dg'], inplace=True)
+m_df['Dg'] = m_df['Sujeto']
+m_df['Dg'].replace(Codex_Dict['Dg'], inplace=True)
+short_df['Grupo'] = short_df['Sujeto']
+short_df['Grupo'].replace(Codex_Dict['Grupo'], inplace=True)
+move = short_df.pop('Grupo')
+short_df.insert(1,'Grupo',move)
+m_df['Grupo'] = m_df['Sujeto']
+m_df['Grupo'].replace(Codex_Dict['Grupo'], inplace=True)
+move = m_df.pop('Grupo')
+m_df.insert(1,'Grupo',move)
+print(short_df)
