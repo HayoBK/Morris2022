@@ -11,7 +11,7 @@ import seaborn as sns   #Estetica de gráficos
 
 m_df = pd.read_csv('MergedDataFrame.csv', index_col=0)
 m_df.rename(columns = {'platformPosition.x':'platformPosition_x', 'platformPosition.y':'platformPosition_y'}, inplace = True)
-
+m_df = m_df[m_df.True_Trial < 8] #Aqui eliminamos esos primeros sujetos en que hicimios demasiados trials por bloques
 for col in m_df.columns:
     print(col)
 FirstRow=True
@@ -130,3 +130,8 @@ m_df['Grupo'].replace(Codex_Dict['Grupo'], inplace=True)
 move = m_df.pop('Grupo')
 m_df.insert(1,'Grupo',move)
 print(short_df)
+
+m_df.to_csv('Navi_Data_con_posicion.csv')
+short_df.to_csv('Navi_Data_con_calculos.csv')
+m_df.to_excel('Navi_Data_con_posicion.xlsx')
+short_df.to_excel('Navi_Data_con_calculos.xlsx')

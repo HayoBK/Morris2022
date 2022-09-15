@@ -146,7 +146,7 @@ home= str(Path.home()) # Obtener el directorio raiz en cada computador distinto
 BaseDir=home+"/OneDrive/2-Casper/00-CurrentResearch/001-FONDECYT_11200469/002-LUCIEN/SUJETOS/" # Esto evidentemente varia. puede que no varié de compu a compu de Hayo
 #----------------------------------------------------
 
-Px_list = ['P06','P12'] # Lista de pacientes a incorporar en el análisis.
+Px_list = ['P06','P12','P01','P02','P03','P04','P05','P07','P08','P10','P11','P13','P14'] # Lista de pacientes a incorporar en el análisis.
 
 #----------------------------------------------------
 Trial_uID = 0
