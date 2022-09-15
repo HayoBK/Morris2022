@@ -118,7 +118,9 @@ def Label_TrueTrialNumber(row):
         TrueTrialNumber = row['Trial']+1
     if (row['True_Block']=='VisibleTarget_2'):
         TrueTrialNumber = row['Trial']+1
-
+    if (row['Sujeto'] == 'P01'):
+        if (row['True_Block']=='HiddenTarget_1'):
+            TrueTrialNumber = row['Trial']-3
     return TrueTrialNumber
 
 def GrabMotion(searchfiles):
