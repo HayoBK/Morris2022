@@ -78,6 +78,7 @@ for row in short_df.itertuples():
 #Aqui añadimos los Unique_IDd trials a borrar manualmente
 Banish_List.extend([1201,2000,2100,1901])
 Banish_List.extend([2700,3000,3100,3300,3400,3404,3005])
+Banish_List.extend([3600,2901,2902,2903,4500,8500,7600,9300,11711,13102,13100,13600,14100,14300,14500,14600])
 
 short_df = short_df[~short_df['Trial_Unique_ID'].isin(Banish_List)]
 m_df = m_df[~m_df['Trial_Unique_ID'].isin(Banish_List)]

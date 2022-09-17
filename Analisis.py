@@ -10,7 +10,13 @@ import seaborn as sns   #Estetica de gráficos
 import matplotlib.pyplot as plt    #Graficos
 
 
-m_df = pd.read_csv('MergedDataFrame.csv', index_col=0)
+m_df = pd.read_csv('Navi_Data_con_calculos.csv', index_col=0)
+show_df = m_df.loc[ m_df['Modalidad']=='No Inmersivo']
+
+ax = sns.barplot(x="True_Block",y="CSE", hue="Grupo", data=show_df)
+ax.set_xticklabels(ax.get_xticklabels(), rotation=45, horizontalalignment='right')
+
+plt.show()
 
 #------------------------------
 #   Micro script para obtener los valores máximos de la vuelta olímpica
