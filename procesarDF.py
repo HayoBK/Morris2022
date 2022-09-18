@@ -82,6 +82,9 @@ Banish_List.extend([3600,2901,2902,2903,4500,8500,7600,9300,11711,13102,13100,13
 
 short_df = short_df[~short_df['Trial_Unique_ID'].isin(Banish_List)]
 m_df = m_df[~m_df['Trial_Unique_ID'].isin(Banish_List)]
+Banish_List =['P13']
+short_df = short_df[~short_df['Sujeto'].isin(Banish_List)]
+m_df = m_df[~m_df['Sujeto'].isin(Banish_List)]
 #Limpieza completa.
 
 #Iniciamos revisión manual de Trials repetidos por errores, para elegir que UniqueTrials añadir a la lista de Banish Manual.

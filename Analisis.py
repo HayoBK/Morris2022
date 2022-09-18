@@ -11,13 +11,41 @@ import matplotlib.pyplot as plt    #Graficos
 
 
 m_df = pd.read_csv('Navi_Data_con_calculos.csv', index_col=0)
-show_df = m_df.loc[ m_df['Modalidad']=='No Inmersivo']
+#show_df = m_df.loc[ m_df['True_Block']=='VisibleTarget_1']
+#show_df = m_df.loc[ m_df['Modalidad']=='No Inmersivo']
 
-ax = sns.barplot(x="True_Block",y="CSE", hue="Grupo", data=show_df)
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45, horizontalalignment='right')
+#g=sns.FacetGrid(data=m_df,col='True_Block', hue='Modalidad')
+#g.map(sns.barplot, 'Grupo', 'CSE', order=['Voluntario Sano', 'Vestibular', 'MPPP'])
+#plt.show()
 
+show_df = m_df.loc[m_df['True_Block']=='VisibleTarget_1']
+ax = sns.barplot(x="Grupo",y="CSE", hue='Modalidad', order=['Voluntario Sano', 'Vestibular', 'MPPP'],data=show_df).set(title='Target Visible (Control)')
 plt.show()
 
+show_df = m_df.loc[m_df['True_Block']=='VisibleTarget_2']
+ax = sns.barplot(x="Grupo",y="CSE", hue='Modalidad', order=['Voluntario Sano', 'Vestibular', 'MPPP'],data=show_df).set(title='Target Visible (Control)')
+plt.show()
+
+show_df = m_df.loc[m_df['True_Block']=='HiddenTarget_1']
+ax = sns.barplot(x="Grupo",y="CSE", hue='Modalidad', order=['Voluntario Sano', 'Vestibular', 'MPPP'],data=show_df).set(title='Plataforma escondida (Desafío de navegación)')
+plt.show()
+
+show_df = m_df.loc[m_df['True_Block']=='HiddenTarget_2']
+ax = sns.barplot(x="Grupo",y="CSE", hue='Modalidad', order=['Voluntario Sano', 'Vestibular', 'MPPP'],data=show_df).set(title='Plataforma escondida (Desafío de navegación)')
+plt.show()
+
+show_df = m_df.loc[m_df['True_Block']=='HiddenTarget_3']
+ax = sns.barplot(x="Grupo",y="CSE", hue='Modalidad', order=['Voluntario Sano', 'Vestibular', 'MPPP'],data=show_df).set(title='Plataforma escondida (Desafío de navegación)')
+plt.show()
+
+#ax = sns.barplot(x="True_Block",y="CSE", hue='Grupo',data=show_df)
+#ax.set_xticklabels(ax.get_xticklabels(), rotation=45, horizontalalignment='right')
+#plt.show()
+
+
+#ax = sns.barplot(x="Grupo",y="CSE", hue='Sujeto',data=show_df)
+#ax.set_xticklabels(ax.get_xticklabels(), rotation=45, horizontalalignment='right')
+#plt.show()
 #------------------------------
 #   Micro script para obtener los valores máximos de la vuelta olímpica
 #   Necesita una recorrida limpia de toda la piscina en circular
