@@ -63,9 +63,7 @@ Mod ='No_Inmersivo'
 Bloc='HiddenTarget_3'
 Plat=True
 show_df = m_df.loc[ (m_df['Sujeto']==Subj) & (m_df['Modalidad']==Mod) & (m_df['True_Block']==Bloc)]
-show_df = m_df.loc[ m_df['Trial_Unique_ID']==1201]
-ax = sns.lineplot(x="P_position_x", y="P_position_y",hue="True_Trial", data=show_df, linewidth=3, alpha = 0.8, legend='full',
-                  sort= False) # palette = sns.color_palette('Blues', as_cmap = True),
+ax = sns.lineplot(x="P_position_x", y="P_position_y",hue="True_Trial", data=show_df, linewidth=3, alpha = 0.8, legend='full', palette = sns.color_palette('Blues', as_cmap = True), sort= False) #
 #sns.set_palette('Blues',6)
 
 sns.set_context("paper", rc={"font.size":20,"axes.titlesize":20,"axes.labelsize":18})

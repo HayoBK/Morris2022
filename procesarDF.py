@@ -98,6 +98,31 @@ for row in e_df.itertuples():
     if len(row.Trial_Unique_ID) > 1:
         Conflict = True
         print(row.Sujeto, row.Modalidad, row.True_Block, row.True_Trial, row.Trial_Unique_ID)
+        show_df = m_df.loc[ (m_df['Sujeto']==row.Sujeto) & (m_df['Modalidad']==row.Modalidad) & (m_df['True_Block']==row.True_Block) & (m_df['True_Trial']==row.True_Trial)]
+        ax = sns.lineplot(x="P_position_x", y="P_position_y", hue="Trial_Unique_ID", data=show_df, linewidth=3, alpha=0.8, sort=False)  # palette = sns.color_palette('Blues', as_cmap = True),
+        print('check')
+Subj='P06'
+Mod ='Realidad Virtual'
+Plat=True
+show_df = short_df.loc[ (short_df['Sujeto']==Subj) & (short_df['Modalidad']==Mod)]
+ax = sns.barplot(x="True_Block", y="Path_length",hue="True_Trial",data=show_df)
+plt.show()
+#Sujeto
+#Modalidad
+#True Block
+#True Trial
+#Bloque
+#Trial
+#Trial Unique-ID
+#Origen
+#Positions
+#P_timeMilliseconds
+#P_position_x
+#P_position_y
+#platformExists
+#platformPosition.x
+#platformPosition.y
+=======
         show_df = m_df.loc[(m_df['Sujeto'] == row.Sujeto) & (m_df['Modalidad'] == row.Modalidad) & (m_df['True_Block'] == row.True_Block) & (m_df['True_Trial'] == row.True_Trial)]
         show_df = show_df.reset_index()
         ax = sns.lineplot(x="P_position_x", y="P_position_y", hue="Trial_Unique_ID", data=show_df, linewidth=3, alpha=0.8, palette = sns.color_palette('Blues', as_cmap = True),sort=False)
