@@ -80,7 +80,26 @@ def Label_TrueTrialNames(row): #Con las proximas dos funciones asignamos los nom
         Trial_Name = 'VisibleTarget_2'
 
     if (row['Sujeto']=='P01'):
+
         Trial_Name = 'Diego'
+        if (row['Bloque'] == 'A') and (row['Trial'] == 0):
+            Trial_Name = 'FreeNav'
+        if (row['Bloque'] == 'A') and (row['Trial'] == 1):
+            Trial_Name = 'Training'
+        if (row['Bloque'] == 'A') and (row['Trial'] > 1) and (row['Trial'] < 4):
+            Trial_Name = 'VisibleTarget_1'
+        if (row['Bloque'] == 'A') and (row['Trial'] > 3):
+            Trial_Name = 'HiddenTarget_1'
+
+        if (row['Bloque'] == 'B'):
+            Trial_Name = 'HiddenTarget_2'
+
+        if (row['Bloque'] == 'C'):
+            Trial_Name = 'HiddenTarget_3'
+
+        if (row['Bloque'] == 'D'):
+            Trial_Name = 'VisibleTarget_2'
+
     return Trial_Name
 
 def Label_TrueTrialNumber(row):
@@ -99,7 +118,9 @@ def Label_TrueTrialNumber(row):
         TrueTrialNumber = row['Trial']+1
     if (row['True_Block']=='VisibleTarget_2'):
         TrueTrialNumber = row['Trial']+1
-
+    if (row['Sujeto'] == 'P01'):
+        if (row['True_Block']=='HiddenTarget_1'):
+            TrueTrialNumber = row['Trial']-3
     return TrueTrialNumber
 
 def GrabMotion(searchfiles):
@@ -127,7 +148,7 @@ home= str(Path.home()) # Obtener el directorio raiz en cada computador distinto
 BaseDir=home+"/OneDrive/2-Casper/00-CurrentResearch/001-FONDECYT_11200469/002-LUCIEN/SUJETOS/" # Esto evidentemente varia. puede que no varié de compu a compu de Hayo
 #----------------------------------------------------
 
-Px_list = ['P06','P12'] # Lista de pacientes a incorporar en el análisis.
+Px_list = ['P06','P12','P01','P02','P03','P04','P05','P07','P08','P10','P11','P13','P14'] # Lista de pacientes a incorporar en el análisis.
 
 #----------------------------------------------------
 Trial_uID = 0
