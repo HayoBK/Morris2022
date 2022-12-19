@@ -79,6 +79,8 @@ for row in short_df.itertuples():
 Banish_List.extend([1201,2000,2100,1901])
 Banish_List.extend([2700,3000,3100,3300,3400,3404,3005])
 Banish_List.extend([3600,2901,2902,2903,4500,8500,7600,9300,11711,13102,13100,13600,14100,14300,14500,14600])
+#a partir de P15 en adelante
+Banish_List.extend([15500,15900,15604,15605,16600,22400,23606,24600,25400,25500,27604,27405,28500,])
 
 short_df = short_df[~short_df['Trial_Unique_ID'].isin(Banish_List)]
 m_df = m_df[~m_df['Trial_Unique_ID'].isin(Banish_List)]
@@ -145,3 +147,4 @@ m_df.to_excel('AB_SimianMaze_Z2_NaviData_con_posicion.xlsx')
 
 short_df.to_csv('AB_SimianMaze_Z3_NaviDataBreve_con_calculos.csv')
 short_df.to_excel('AB_SimianMaze_Z3_NaviDataBreve_con_calculos.xlsx')
+print(' hey ')
