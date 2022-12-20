@@ -87,6 +87,8 @@ m_df = m_df[~m_df['Trial_Unique_ID'].isin(Banish_List)]
 Banish_List =['P13']
 short_df = short_df[~short_df['Sujeto'].isin(Banish_List)]
 m_df = m_df[~m_df['Sujeto'].isin(Banish_List)]
+short_df = short_df.dropna()
+m_df = m_df.dropna()
 #Limpieza completa.
 
 #Iniciamos revisión manual de Trials repetidos por errores, para elegir que UniqueTrials añadir a la lista de Banish Manual.
@@ -143,8 +145,10 @@ m_df.insert(1,'Grupo',move)
 print(short_df)
 
 m_df.to_csv('AB_SimianMaze_Z2_NaviData_con_posicion.csv')
+print('25%')
 m_df.to_excel('AB_SimianMaze_Z2_NaviData_con_posicion.xlsx')
-
+print('50%')
 short_df.to_csv('AB_SimianMaze_Z3_NaviDataBreve_con_calculos.csv')
+print('75%')
 short_df.to_excel('AB_SimianMaze_Z3_NaviDataBreve_con_calculos.xlsx')
-print(' hey you ')
+print('100% todo listo ')

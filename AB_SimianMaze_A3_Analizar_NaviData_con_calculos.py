@@ -10,9 +10,27 @@ import seaborn as sns   #Estetica de gráficos
 import matplotlib.pyplot as plt    #Graficos
 
 
-m_df = pd.read_csv('Navi_Data_con_calculos.csv', index_col=0)
+m_df = pd.read_csv('AB_SimianMaze_Z3_NaviDataBreve_con_calculos.csv', index_col=0)
 #show_df = m_df.loc[ m_df['True_Block']=='VisibleTarget_1']
 #show_df = m_df.loc[ m_df['Modalidad']=='No Inmersivo']
+
+
+
+g = sns.FacetGrid(m_df, row="True_Block", col="Modalidad")
+g.figure.set_size_inches(17,17)
+
+g.map(sns.lineplot, "True_Trial", "CSE", "Grupo")
+g.add_legend()
+plt.show()
+
+show_df = m_df.loc[ m_df['Modalidad']=='No Inmersivo']
+ax = sns.barplot(x="Grupo",y="CSE",data=show_df)
+plt.show()
+
+show_df = m_df.loc[ m_df['Modalidad']=='No Inmersivo']
+show_df = show_df.loc[ m_df['Grupo']=='MPPP']
+ax = sns.barplot(x="Sujeto",y="CSE",data=show_df)
+plt.show()
 
 #g=sns.FacetGrid(data=m_df,col='True_Block', hue='Modalidad')
 #g.map(sns.barplot, 'Grupo', 'CSE', order=['Voluntario Sano', 'Vestibular', 'MPPP'])
@@ -21,21 +39,38 @@ m_df = pd.read_csv('Navi_Data_con_calculos.csv', index_col=0)
 show_df = m_df.loc[m_df['True_Block']=='VisibleTarget_1']
 ax = sns.barplot(x="Grupo",y="CSE", hue='Modalidad', order=['Voluntario Sano', 'Vestibular', 'MPPP'],data=show_df).set(title='Target Visible (Control)')
 plt.show()
+ax= sns.lineplot(x="True_Trial", y="CSE", hue='Grupo', data= show_df)
+plt.show()
 
 show_df = m_df.loc[m_df['True_Block']=='VisibleTarget_2']
-ax = sns.barplot(x="Grupo",y="CSE", hue='Modalidad', order=['Voluntario Sano', 'Vestibular', 'MPPP'],data=show_df).set(title='Target Visible (Control)')
+ax = sns.barplot(x="Grupo",y="CSE", hue='Modalidad', order=['Voluntario Sano', 'Vestibular', 'MPPP'],data=show_df).set(title='Target Visible (Control) 2')
+plt.show()
+ax= sns.lineplot(x="True_Trial", y="CSE", hue='Grupo', data= show_df)
+plt.show()
+
+show_df = m_df.loc[m_df['True_Block']=='VisibleTarget_2']
+show_df = show_df.loc[show_df['Grupo']=='MPPP']
+ax = sns.barplot(x="Sujeto",y="CSE", hue='Modalidad',data=show_df).set(title='Target Visible (Control) 2')
+plt.show()
+ax= sns.lineplot(x="True_Trial", y="CSE", hue='Grupo', data= show_df)
 plt.show()
 
 show_df = m_df.loc[m_df['True_Block']=='HiddenTarget_1']
 ax = sns.barplot(x="Grupo",y="CSE", hue='Modalidad', order=['Voluntario Sano', 'Vestibular', 'MPPP'],data=show_df).set(title='Plataforma escondida (Desafío de navegación)')
 plt.show()
+ax= sns.lineplot(x="True_Trial", y="CSE", hue='Grupo', data= show_df)
+plt.show()
 
 show_df = m_df.loc[m_df['True_Block']=='HiddenTarget_2']
 ax = sns.barplot(x="Grupo",y="CSE", hue='Modalidad', order=['Voluntario Sano', 'Vestibular', 'MPPP'],data=show_df).set(title='Plataforma escondida (Desafío de navegación)')
 plt.show()
+ax= sns.lineplot(x="True_Trial", y="CSE", hue='Grupo', data= show_df)
+plt.show()
 
 show_df = m_df.loc[m_df['True_Block']=='HiddenTarget_3']
 ax = sns.barplot(x="Grupo",y="CSE", hue='Modalidad', order=['Voluntario Sano', 'Vestibular', 'MPPP'],data=show_df).set(title='Plataforma escondida (Desafío de navegación)')
+plt.show()
+ax= sns.lineplot(x="True_Trial", y="CSE", hue='Grupo', data= show_df)
 plt.show()
 
 #ax = sns.barplot(x="True_Block",y="CSE", hue='Grupo',data=show_df)
