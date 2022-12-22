@@ -11,10 +11,37 @@ import matplotlib.pyplot as plt    #Graficos
 
 
 m_df = pd.read_csv('AB_SimianMaze_Z3_NaviDataBreve_con_calculos.csv', index_col=0)
+
+
+m_df['Main_Block']=m_df['True_Block']
+m_df.loc[(m_df.Main_Block == 'FreeNav'),'Main_Block']='Non_relevant'
+m_df.loc[(m_df.Main_Block == 'Training'),'Main_Block']='Non_relevant'
+m_df.loc[(m_df.Main_Block == 'VisibleTarget_1'),'Main_Block']='Target_is_Visible'
+m_df.loc[(m_df.Main_Block == 'VisibleTarget_2'),'Main_Block']='Target_is_Visible'
+m_df.loc[(m_df.Main_Block == 'HiddenTarget_1'),'Main_Block']='Target_is_Hidden'
+m_df.loc[(m_df.Main_Block == 'HiddenTarget_2'),'Main_Block']='Target_is_Hidden'
+m_df.loc[(m_df.Main_Block == 'HiddenTarget_3'),'Main_Block']='Target_is_Hidden'
+
+show_df = m_df.loc[ m_df['Main_Block']!='Non_relevant']
+g = sns.FacetGrid(show_df, row="Main_Block", col="Modalidad")
+g.figure.set_size_inches(17,17)
+g.map(sns.lineplot, "True_Trial", "CSE", "Grupo")
+g.add_legend()
+plt.show()
+
+show_df = m_df.loc[ m_df['Main_Block']=='Target_is_Hidden']
+g = sns.FacetGrid(show_df, row="True_Block", col="Modalidad")
+g.figure.set_size_inches(17,17)
+g.map(sns.lineplot, "True_Trial", "CSE", "Grupo")
+g.add_legend()
+plt.show()
+
 #show_df = m_df.loc[ m_df['True_Block']=='VisibleTarget_1']
 #show_df = m_df.loc[ m_df['Modalidad']=='No Inmersivo']
 
-
+ax = sns.barplot(x='Sujeto',y='CSE',hue='Grupo', data=m_df)
+ax.figure.set_size_inches(17,17)
+plt.show()
 
 g = sns.FacetGrid(m_df, row="True_Block", col="Modalidad")
 g.figure.set_size_inches(17,17)
