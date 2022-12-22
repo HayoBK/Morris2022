@@ -11,9 +11,14 @@ import matplotlib.pyplot as plt    #Graficos
 
 
 m_df = pd.read_csv('AB_SimianMaze_Z3_NaviDataBreve_con_calculos.csv', index_col=0)
+#p_df = pd.read_csv('AB_SimianMaze_Z2_NaviData_con_posicion.csv', index_col=0)
+    # Invocamos en m_df (main Dataframe) la base de datos "corta" con calculo de CSE por Trial
+    # Invocamos en p_df (position Dataframe) la base con tutti cuanti - sobre todo datos posicionales
 
+#-------------------------------------------------------------------------------
+#  @@@ Aqui primero una preparación adicional de la base de datos
 
-m_df['Main_Block']=m_df['True_Block']
+m_df['Main_Block']=m_df['True_Block']  # Aqui vamos a recodificar los Bloques en un "Main Block" más grueso
 m_df.loc[(m_df.Main_Block == 'FreeNav'),'Main_Block']='Non_relevant'
 m_df.loc[(m_df.Main_Block == 'Training'),'Main_Block']='Non_relevant'
 m_df.loc[(m_df.Main_Block == 'VisibleTarget_1'),'Main_Block']='Target_is_Visible'
@@ -21,6 +26,27 @@ m_df.loc[(m_df.Main_Block == 'VisibleTarget_2'),'Main_Block']='Target_is_Visible
 m_df.loc[(m_df.Main_Block == 'HiddenTarget_1'),'Main_Block']='Target_is_Hidden'
 m_df.loc[(m_df.Main_Block == 'HiddenTarget_2'),'Main_Block']='Target_is_Hidden'
 m_df.loc[(m_df.Main_Block == 'HiddenTarget_3'),'Main_Block']='Target_is_Hidden'
+
+r_df = m_df.loc[ m_df['Main_Block']!='Non_relevant'] # Seleccionamos solo los relevantes
+rNI_df = r_df.loc[ r_df['Modalidad']=='No Inmersivo'] # rNI_df es la base para lo No Inmersivo
+
+# Realizaremos estudio de caso a caso.
+
+PXX_List = rNI_df['Sujeto'].unique()
+
+for Pxx in PXX_List:
+    print(Pxx)
+
+#-------------------------------------------------------------------------------
+# Ahora intentaremos replicar el estudio original
+
+# Primero nos aseguramos que tengamos todos los trial en este grupo
+Trial_Count = rNI_df['Sujeto'].value_counts(ascending = True)
+# Y de inmediato tenemos un problema... no todos los sujetos tienen el mismo numero de Trials!
+# PORQUE???
+# Primero mejor realizaremos el estudio detallado por cada individuo por cada trial
+
+
 
 show_df = m_df.loc[ m_df['Main_Block']!='Non_relevant']
 g = sns.FacetGrid(show_df, row="Main_Block", col="Modalidad")
