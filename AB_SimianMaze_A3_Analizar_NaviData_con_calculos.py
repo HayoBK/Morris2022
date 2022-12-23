@@ -30,12 +30,17 @@ m_df.loc[(m_df.Main_Block == 'HiddenTarget_3'),'Main_Block']='Target_is_Hidden'
 r_df = m_df.loc[ m_df['Main_Block']!='Non_relevant'] # Seleccionamos solo los relevantes
 rNI_df = r_df.loc[ r_df['Modalidad']=='No Inmersivo'] # rNI_df es la base para lo No Inmersivo
 
+#-------------------------------------------------------------------------------
 # Realizaremos estudio de caso a caso.
 
-PXX_List = rNI_df['Sujeto'].unique()
+PXX_List = rNI_df['Sujeto'].unique()  # Obtenemos una lista de todos los sujetos individualizados
 
-for Pxx in PXX_List:
+for Pxx in PXX_List:     # Vamos ahora sujeto por sujeto.
     print(Pxx)
+    show_df = rNI_df.loc[rNI_df['Sujeto']==Pxx]
+    ax = sns.countplot(x='True_Block',hue='True_Trial', data= show_df).set(title=('Conteo de Trials en ' + str(Pxx)))
+    plt.show()
+    print('Next')
 
 #-------------------------------------------------------------------------------
 # Ahora intentaremos replicar el estudio original
