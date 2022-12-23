@@ -82,13 +82,30 @@ Banish_List.extend([3600,2901,2902,2903,4500,8500,7600,9300,11711,13102,13100,13
 #a partir de P15 en adelante
 Banish_List.extend([15500,15900,15604,15605,16600,22400,23606,24600,25400,25500,27604,27405,28500,])
 
+Banished_short_df = short_df[short_df['Trial_Unique_ID'].isin(Banish_List)]
+Banished_short_df.to_excel('AB_SimianMaze_Z2_Banished_NaviData.xlsx')
+
+Banished_long_df = m_df[m_df['Trial_Unique_ID'].isin(Banish_List)]
+Banished_long_df.to_excel('AB_SimianMaze_Z2_Banished_NaviDataLong.xlsx')
+
+
 short_df = short_df[~short_df['Trial_Unique_ID'].isin(Banish_List)]
 m_df = m_df[~m_df['Trial_Unique_ID'].isin(Banish_List)]
 Banish_List =['P13']
 short_df = short_df[~short_df['Sujeto'].isin(Banish_List)]
 m_df = m_df[~m_df['Sujeto'].isin(Banish_List)]
+
+safe_df = short_df # aqui estamos guardando la df para revisar cuales fueron los elementos eliminados.
 short_df = short_df.dropna()
+dropped_df = safe_df[~safe_df.index.isin(short_df.index)] # aqui vemos los elementos dropeados
+dropped_df.to_excel('AB_SimianMaze_Z2_Dropped_NaviData.xlsx')
+
+safe_df = m_df
 m_df = m_df.dropna()
+dropped_df = safe_df[~safe_df.index.isin(m_df.index)] # aqui vemos los elementos dropeados
+dropped_df.to_excel('AB_SimianMaze_Z2_Dropped_NaviDataLong.xlsx')
+
+
 #Limpieza completa.
 
 #Iniciamos revisión manual de Trials repetidos por errores, para elegir que UniqueTrials añadir a la lista de Banish Manual.

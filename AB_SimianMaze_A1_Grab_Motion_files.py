@@ -175,6 +175,7 @@ column = df.pop('True_Trial')
 df.insert(3,'True_Trial',column)
 
 df.to_csv('AB_SimianMaze_Z1_RawMotion.csv')  #y lo exportamos
+df.to_excel('AB_SimianMaze_Z1_RawMotion.xlsx')
 print('Todo listo')
 
 #e_df=df.groupby(['Sujeto','Modalidad','Trial Unique-ID','True Block','True Trial']).agg({'P_timeMilliseconds': ['max'], 'P_position_x':['var'],'P_position_y':['var']})
