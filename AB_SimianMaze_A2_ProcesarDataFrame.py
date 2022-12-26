@@ -111,6 +111,11 @@ dropped_df.to_excel('AB_SimianMaze_Z2_Dropped_NaviDataLong.xlsx')
 
 #Limpieza completa.
 
+#Ahora quiero corregir algunos errores puntuales interpolando datos especificos en Rows faltantes....
+def Interpolar_Row(Data,Suj,Bloq,TT): #Datos para localizar el Trial faltante
+    Extract_Row = Data.loc[Data]
+
+
 #Iniciamos revisión manual de Trials repetidos por errores, para elegir que UniqueTrials añadir a la lista de Banish Manual.
 
 e_df = short_df.groupby(['Sujeto','Modalidad','True_Block','True_Trial'])['Trial_Unique_ID'].apply(list).reset_index()
