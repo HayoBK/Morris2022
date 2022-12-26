@@ -82,6 +82,7 @@ Banish_List.extend([3600,2901,2902,2903,4500,8500,7600,9300,11711,13102,13100,13
 #a partir de P15 en adelante
 Banish_List.extend([15500,15900,15604,15605,16600,22400,23606,24600,25400,25500,27604,27405,28500,])
 
+# Aqui vamos a hacer una lista de los trials que eliminamos.
 Banished_short_df = short_df[short_df['Trial_Unique_ID'].isin(Banish_List)]
 Banished_short_df.to_excel('AB_SimianMaze_Z2_Banished_NaviData.xlsx')
 
@@ -91,11 +92,13 @@ Banished_long_df.to_excel('AB_SimianMaze_Z2_Banished_NaviDataLong.xlsx')
 
 short_df = short_df[~short_df['Trial_Unique_ID'].isin(Banish_List)]
 m_df = m_df[~m_df['Trial_Unique_ID'].isin(Banish_List)]
+
+# Aqui sacamos a sujetos especificos que se salieron de parametros o no cumplieron criterios de inclusion.
 Banish_List =['P13']
 short_df = short_df[~short_df['Sujeto'].isin(Banish_List)]
 m_df = m_df[~m_df['Sujeto'].isin(Banish_List)]
 
-safe_df = short_df # aqui estamos guardando la df para revisar cuales fueron los elementos eliminados.
+safe_df = short_df # aqui estamos guardando la df para revisar cuales fueron los elementos eliminados por DropNa
 short_df = short_df.dropna()
 dropped_df = safe_df[~safe_df.index.isin(short_df.index)] # aqui vemos los elementos dropeados
 dropped_df.to_excel('AB_SimianMaze_Z2_Dropped_NaviData.xlsx')
@@ -160,6 +163,17 @@ m_df['Grupo'].replace(Codex_Dict['Grupo'], inplace=True)
 move = m_df.pop('Grupo')
 m_df.insert(1,'Grupo',move)
 print(short_df)
+
+#Aqui hare una DataBase Limpia de los sujetos incluidos en el estudio, solo datos básicos
+PXX_List = short_df['Sujeto'].unique()  # Obtenemos una lista de todos los sujetos individualizados
+codex_df = pd.DataFrame(PXX_List, columns = ['Sujeto'])
+codex_df['Edad'] = codex_df['Sujeto']
+codex_df['Edad'].replace(Codex_Dict['Edad'], inplace=True)
+codex_df['Grupo'] = codex_df['Sujeto']
+codex_df['Grupo'].replace(Codex_Dict['Grupo'], inplace=True)
+
+Resumen_codex_df = codex_df.groupby('Grupo')['Edad'].agg(Conteo='size', Edad_promedio='mean').reset_index()
+
 
 m_df.to_csv('AB_SimianMaze_Z2_NaviData_con_posicion.csv')
 print('25%')
