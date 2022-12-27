@@ -113,7 +113,15 @@ dropped_df.to_excel('AB_SimianMaze_Z2_Dropped_NaviDataLong.xlsx')
 
 #Ahora quiero corregir algunos errores puntuales interpolando datos especificos en Rows faltantes....
 def Interpolar_Row(Data,Suj,Bloq,TT): #Datos para localizar el Trial faltante
-    Extract_Row = Data.loc[Data]
+    Data = Data.reset_index(drop=True)
+    Ind = Data.index[(Data['Sujeto']==Suj) & (Data['True_Block']==Bloq) & (Data['True_Trial']==TT-1)] # Obtenemos la linea inmediatament anterior
+    print('Intentando realizar interpolación de ',Suj,Bloq,TT)
+    print('Obteniendo indice (debe ser un solo número)--> ',Ind)
+    Ind = Ind[0]  # esto lo hacemos para transformar una lista en un número
+    Copy_Row = Data.iloc[Ind]
+    Promedio_CSE = (Data.iloc[Ind]['CSE'] + Data.iloc[Ind+1]['CSE'])/2
+    Copy_Row.at[0,'CSE']=Promedio_CSE
+    print(Copy_Row)
 
 
 #Iniciamos revisión manual de Trials repetidos por errores, para elegir que UniqueTrials añadir a la lista de Banish Manual.
