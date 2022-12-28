@@ -8,6 +8,7 @@ import pandas as pd     #Base de datos
 import numpy as np
 import matplotlib.pyplot as plt    #Graficos
 import seaborn as sns   #Estetica de gráficos
+pd.options.mode.chained_assignment = None  # default='warn'
 
 m_df = pd.read_csv('AB_SimianMaze_Z1_RawMotion.csv', index_col=0)
 m_df.rename(columns = {'platformPosition.x':'platformPosition_x', 'platformPosition.y':'platformPosition_y'}, inplace = True)
@@ -111,18 +112,6 @@ dropped_df.to_excel('AB_SimianMaze_Z2_Dropped_NaviDataLong.xlsx')
 
 #Limpieza completa.
 
-#Ahora quiero corregir algunos errores puntuales interpolando datos especificos en Rows faltantes....
-def Interpolar_Row(Data,Suj,Bloq,TT): #Datos para localizar el Trial faltante
-    Data = Data.reset_index(drop=True)
-    Ind = Data.index[(Data['Sujeto']==Suj) & (Data['True_Block']==Bloq) & (Data['True_Trial']==TT-1)] # Obtenemos la linea inmediatament anterior
-    print('Intentando realizar interpolación de ',Suj,Bloq,TT)
-    print('Obteniendo indice (debe ser un solo número)--> ',Ind)
-    Ind = Ind[0]  # esto lo hacemos para transformar una lista en un número
-    Copy_Row = Data.iloc[Ind]
-    Promedio_CSE = (Data.iloc[Ind]['CSE'] + Data.iloc[Ind+1]['CSE'])/2
-    Copy_Row.at[0,'CSE']=Promedio_CSE
-    print(Copy_Row)
-
 
 #Iniciamos revisión manual de Trials repetidos por errores, para elegir que UniqueTrials añadir a la lista de Banish Manual.
 
@@ -151,7 +140,119 @@ for row in e_df.itertuples():
         print('check')
 print('¿Hubo conflicto? --> ',Conflict)
 
+#-------------------------------------------------------------------------------------------------------------
+#Ahora quiero corregir algunos errores puntuales interpolando datos especificos en Rows faltantes....
+#-------------------------------------------------------------------------------------------------------------
+
+
+def Interpolar_Row(Data,Suj,Bloq,TT): #Datos para localizar el Trial faltante
+    Data = Data.reset_index(drop=True)
+    Ind = Data.index[(Data['Modalidad']=='No Inmersivo') & (Data['Sujeto']==Suj) & (Data['True_Block']==Bloq) & (Data['True_Trial']==TT-1)] # Obtenemos la linea inmediatament anterior
+    Ind = Ind[0] # esto lo hacemos para transformar una lista en un número
+    print('Intentando realizar interpolación de ',Suj,Bloq,TT)
+    print('Obteniendo indice (debe ser un solo número)--> ',Ind)
+    Copy_Row = Data.iloc[[Ind]]
+    Promedio_CSE = (Data.iloc[Ind]['CSE'] + Data.iloc[Ind+1]['CSE'])/2
+    Copy_Row.at[Ind,'CSE']=Promedio_CSE
+    Copy_Row.at[Ind, 'True_Trial'] = TT
+    print(Copy_Row)
+    DataA = Data.iloc[:Ind, ]
+    DataB = Data.iloc[Ind:, ]
+    Data = DataA.append(Copy_Row).append(DataB).reset_index(drop=True)
+
+    return Data
+
+short_df = Interpolar_Row(short_df,'P12','HiddenTarget_3',2)
+short_df = Interpolar_Row(short_df,'P07','VisibleTarget_2',3)
+short_df = Interpolar_Row(short_df,'P19','HiddenTarget_3',3)
+short_df = Interpolar_Row(short_df,'P21','HiddenTarget_3',2)
+short_df = Interpolar_Row(short_df,'P28','HiddenTarget_3',2)
+
+# Caso especial que no se puede usar Interpolar Row definido previamente:
+#-------------------------------------------------------------------------------------------------------------
+# Aqui se puede poner un primer TT
+
+def Interpolar_Row_TT1_Missing(Data,Suj,Bloq,TT): #Datos para localizar el Trial faltante
+    Data = Data.reset_index(drop=True)
+    Ind = Data.index[(Data['Modalidad']=='No Inmersivo') & (Data['Sujeto']==Suj) & (Data['True_Block']==Bloq) & (Data['True_Trial']==TT+1)] # Obtenemos la linea inmediatament siguiente en este caso
+    Ind = Ind[0] # esto lo hacemos para transformar una lista en un número
+    print('Intentando realizar interpolación de ',Suj,Bloq,TT)
+    print('Obteniendo indice (debe ser un solo número)--> ',Ind)
+    Copy_Row = Data.iloc[[Ind]]
+    Promedio_CSE = Data.iloc[Ind]['CSE']
+    Copy_Row.at[Ind,'CSE']=Promedio_CSE
+    Copy_Row.at[Ind, 'True_Trial'] = TT
+    print(Copy_Row)
+    DataA = Data.iloc[:Ind, ]
+    DataB = Data.iloc[Ind:, ]
+    Data = DataA.append(Copy_Row).append(DataB).reset_index(drop=True)
+
+    return Data
+
+short_df = Interpolar_Row_TT1_Missing(short_df,'P21','VisibleTarget_2',1)
+short_df = Interpolar_Row_TT1_Missing(short_df,'P11','HiddenTarget_3',1)
+
+def Interpolar_Row_TT7_Missing(Data,Suj,Bloq,TT): #Datos para localizar el Trial faltante
+    Data = Data.reset_index(drop=True)
+    Ind = Data.index[(Data['Modalidad']=='No Inmersivo') & (Data['Sujeto']==Suj) & (Data['True_Block']==Bloq) & (Data['True_Trial']==TT-1)] # Obtenemos la linea inmediatament anterior
+    Ind = Ind[0] # esto lo hacemos para transformar una lista en un número
+    print('Intentando realizar interpolación de ',Suj,Bloq,TT)
+    print('Obteniendo indice (debe ser un solo número)--> ',Ind)
+    Copy_Row = Data.iloc[[Ind]]
+    Promedio_CSE = Data.iloc[Ind]['CSE']
+    Copy_Row.at[Ind,'CSE']=Promedio_CSE
+    Copy_Row.at[Ind, 'True_Trial'] = TT
+    print(Copy_Row)
+    DataA = Data.iloc[:Ind, ]
+    DataB = Data.iloc[Ind:, ]
+    Data = DataA.append(Copy_Row).append(DataB).reset_index(drop=True)
+
+    return Data
+
+short_df = Interpolar_Row_TT7_Missing(short_df,'P11','HiddenTarget_3',7)
+short_df = Interpolar_Row_TT7_Missing(short_df,'P23','HiddenTarget_3',7)
+short_df = Interpolar_Row_TT7_Missing(short_df,'P24','HiddenTarget_3',7)
+
+short_df = Interpolar_Row_TT7_Missing(short_df,'P01','VisibleTarget_1',3)
+short_df = Interpolar_Row_TT7_Missing(short_df,'P01','VisibleTarget_1',4)
+short_df = Interpolar_Row_TT7_Missing(short_df,'P01','HiddenTarget_2',4)
+short_df = Interpolar_Row_TT7_Missing(short_df,'P01','HiddenTarget_2',5)
+short_df = Interpolar_Row_TT7_Missing(short_df,'P01','HiddenTarget_2',6)
+short_df = Interpolar_Row_TT7_Missing(short_df,'P01','HiddenTarget_2',7)
+short_df = Interpolar_Row_TT7_Missing(short_df,'P01','HiddenTarget_3',5)
+short_df = Interpolar_Row_TT7_Missing(short_df,'P01','HiddenTarget_3',6)
+short_df = Interpolar_Row_TT7_Missing(short_df,'P01','HiddenTarget_3',7)
+short_df = Interpolar_Row_TT7_Missing(short_df,'P01','VisibleTarget_2',3)
+
+
+
+
+
+
+
+
+
+
+#Repetir V2 desde V1 en P05
+Data= short_df
+Data = Data.reset_index(drop=True)
+Copy_Row = Data.loc[(Data['Modalidad']=='No Inmersivo') & (Data['Sujeto']=='P05') & (Data['True_Block']=='VisibleTarget_1') & (Data['True_Trial']<4)]
+Ind = Data.index[(Data['Modalidad']=='No Inmersivo') & (Data['Sujeto']=='P05') & (Data['True_Block']=='VisibleTarget_1') & (Data['True_Trial']==1)]
+Ind = Ind[0]
+for i in range(3):
+    Copy_Row.at[(Ind+i), 'True_Block'] = 'VisibleTarget_2'
+Ind = Data.index[(Data['Modalidad']=='No Inmersivo') & (Data['Sujeto']=='P05') & (Data['True_Block']=='HiddenTarget_3') & (Data['True_Trial']==7)]
+Ind = Ind[0]+1
+DataA = short_df.iloc[:Ind, ]
+DataB = short_df.iloc[Ind:, ]
+short_df = DataA.append(Copy_Row).append(DataB).reset_index(drop=True)
+
+
+#-------------------------------------------------------------------------------------------------------------
+
 # Ahora enriquecemos la base de datos con datos de los pacientes
+
+#-------------------------------------------------------------------------------------------------------------
 
 codex = pd.read_excel('AA_CODEX.xlsx',index_col=0)
 Codex_Dict = codex.to_dict('series')
@@ -190,9 +291,9 @@ Resumen_codex_df = codex_df.groupby('Grupo')['Edad'].agg(Conteo='size', Edad_pro
 
 m_df.to_csv('AB_SimianMaze_Z2_NaviData_con_posicion.csv')
 print('25%')
-m_df.to_excel('AB_SimianMaze_Z2_NaviData_con_posicion.xlsx')
+#m_df.to_excel('AB_SimianMaze_Z2_NaviData_con_posicion.xlsx')
 print('50%')
 short_df.to_csv('AB_SimianMaze_Z3_NaviDataBreve_con_calculos.csv')
 print('75%')
-short_df.to_excel('AB_SimianMaze_Z3_NaviDataBreve_con_calculos.xlsx')
+#short_df.to_excel('AB_SimianMaze_Z3_NaviDataBreve_con_calculos.xlsx')
 print('100% todo listo ')
