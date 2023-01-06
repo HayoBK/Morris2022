@@ -8,10 +8,11 @@ import pandas as pd     #Base de datos
 import numpy as np
 import seaborn as sns   #Estetica de gráficos
 import matplotlib.pyplot as plt    #Graficos
+from pathlib import Path
 
 
 m_df = pd.read_csv('AB_SimianMaze_Z3_NaviDataBreve_con_calculos.csv', index_col=0)
-#p_df = pd.read_csv('AB_SimianMaze_Z2_NaviData_con_posicion.csv', index_col=0)
+p_df = pd.read_csv('AB_SimianMaze_Z2_NaviData_con_posicion.csv', index_col=0)
     # Invocamos en m_df (main Dataframe) la base de datos "corta" con calculo de CSE por Trial
     # Invocamos en p_df (position Dataframe) la base con tutti cuanti - sobre todo datos posicionales
 
@@ -30,6 +31,42 @@ m_df.loc[(m_df.Main_Block == 'HiddenTarget_3'),'Main_Block']='Target_is_Hidden'
 r_df = m_df.loc[ m_df['Main_Block']!='Non_relevant'] # Seleccionamos solo los relevantes
 rNI_df = r_df.loc[ r_df['Modalidad']=='No Inmersivo'] # rNI_df es la base para lo No Inmersivo
 
+p_df['Main_Block']=m_df['True_Block']  # Aqui vamos a recodificar los Bloques en un "Main Block" más grueso
+p_df.loc[(p_df.Main_Block == 'FreeNav'),'Main_Block']='Non_relevant'
+p_df.loc[(p_df.Main_Block == 'Training'),'Main_Block']='Non_relevant'
+p_df.loc[(p_df.Main_Block == 'VisibleTarget_1'),'Main_Block']='Target_is_Visible'
+p_df.loc[(p_df.Main_Block == 'VisibleTarget_2'),'Main_Block']='Target_is_Visible'
+p_df.loc[(p_df.Main_Block == 'HiddenTarget_1'),'Main_Block']='Target_is_Hidden'
+p_df.loc[(p_df.Main_Block == 'HiddenTarget_2'),'Main_Block']='Target_is_Hidden'
+p_df.loc[(p_df.Main_Block == 'HiddenTarget_3'),'Main_Block']='Target_is_Hidden'
+
+pos_df = p_df.loc[ p_df['Main_Block']!='Non_relevant'] # Seleccionamos solo los relevantes
+posNI_df = pos_df.loc[ pos_df['Modalidad']=='No Inmersivo'] # posNI_df es la base para lo No Inmersivo
+
+# Revisión general
+
+home= str(Path.home()) # Obtener el directorio raiz en cada computador distinto
+BaseDir=home+"/OneDrive/2-Casper/00-CurrentResearch/001-FONDECYT_11200469/002-LUCIEN/Outputs/MorrisWMz/"
+
+sns.set(style= 'white', rc={'figure.figsize':(12,12)})
+ax = sns.boxplot(x='Grupo',y='CSE',hue='Sujeto',data=rNI_df).set(title=('CSE global todos los trials'))
+plt.savefig(BaseDir+'CSE_Global_con_Pxx.png')
+plt.show()
+
+ax = sns.boxplot(x='Sujeto',y='CSE',hue='Grupo',data=rNI_df).set(title=('CSE global todos los trials'))
+plt.savefig(BaseDir+'CSE_Global_POR_Pxx.png')
+plt.show()
+
+def Plot_Mwz_Learning(Scope,Bloque,dat):
+    plot_df=dat.loc[dat[Scope]==Bloque]
+    ax = sns.lineplot(data=plot_df, x='True_Trial',y='CSE',hue='Grupo').set(title=('Learning_at_' + Scope + '_'+ Bloque))
+    plt.savefig(BaseDir + 'Learning_at_' + Scope + '_'+ Bloque +'.png')
+    plt.show()
+
+Plot_Mwz_Learning('True_Block','VisibleTarget_1',rNI_df)
+Plot_Mwz_Learning('True_Block','VisibleTarget_2',rNI_df)
+Plot_Mwz_Learning('Main_Block','Target_is_Visible',rNI_df)
+
 #-------------------------------------------------------------------------------
 # Realizaremos estudio de caso a caso.
 
@@ -38,6 +75,7 @@ PXX_List = rNI_df['Sujeto'].unique()  # Obtenemos una lista de todos los sujetos
 for Pxx in PXX_List:     # Vamos ahora sujeto por sujeto.
     print(Pxx)
     show_df = rNI_df.loc[rNI_df['Sujeto']==Pxx]
+    showPos_df = posNI_df.loc[posNI_df['Sujeto']==Pxx]
     ax = sns.countplot(x='True_Block',hue='True_Trial', data= show_df).set(title=('Conteo de Trials en ' + str(Pxx)))
     plt.show()
     print('Next')
