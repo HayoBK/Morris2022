@@ -66,6 +66,12 @@ def Plot_Mwz_Learning(Scope,Bloque,dat):
 Plot_Mwz_Learning('True_Block','VisibleTarget_1',rNI_df)
 Plot_Mwz_Learning('True_Block','VisibleTarget_2',rNI_df)
 Plot_Mwz_Learning('Main_Block','Target_is_Visible',rNI_df)
+Plot_Mwz_Learning('True_Block','HiddenTarget_1',rNI_df)
+Plot_Mwz_Learning('True_Block','HiddenTarget_2',rNI_df)
+Plot_Mwz_Learning('True_Block','HiddenTarget_3',rNI_df)
+Plot_Mwz_Learning('Main_Block','Target_is_Hidden',rNI_df)
+
+
 
 #-------------------------------------------------------------------------------
 # Realizaremos estudio de caso a caso.
