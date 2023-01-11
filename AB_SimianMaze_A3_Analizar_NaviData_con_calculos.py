@@ -3,18 +3,43 @@
 # Fondecyt 11200469
 # Hayo Breinbauer
 # ---------------------------------------------------------
-
+#%%
 import pandas as pd     #Base de datos
 import numpy as np
 import seaborn as sns   #Estetica de gráficos
 import matplotlib.pyplot as plt    #Graficos
 from pathlib import Path
 
-
+codex_df = pd.read_csv('AB_SimianMaze_Z4_Resumen_Pacientes_Analizados.csv', index_col=0)
 m_df = pd.read_csv('AB_SimianMaze_Z3_NaviDataBreve_con_calculos.csv', index_col=0)
 p_df = pd.read_csv('AB_SimianMaze_Z2_NaviData_con_posicion.csv', index_col=0)
+p_df= p_df.reset_index(drop=True)
     # Invocamos en m_df (main Dataframe) la base de datos "corta" con calculo de CSE por Trial
     # Invocamos en p_df (position Dataframe) la base con tutti cuanti - sobre todo datos posicionales
+
+home= str(Path.home()) # Obtener el directorio raiz en cada computador distinto
+BaseDir=home+"/OneDrive/2-Casper/00-CurrentResearch/001-FONDECYT_11200469/002-LUCIEN/Outputs/MorrisWMz/"
+sns.set_palette('pastel')
+pal = sns.color_palette(n_colors=3)
+pal = pal.as_hex()
+
+# Primerito una revisión rápida descriptiva de la muestra en termino de tamaño de grupos y edades
+sns.set(style= 'white', palette='pastel', font_scale=2,rc={'figure.figsize':(12,12)})
+Mi_Orden = ['MPPP', 'Vestibular', 'Voluntario Sano']
+
+ax = sns.countplot(data= codex_df, x= 'Grupo', order=Mi_Orden)
+ax.bar_label(ax.containers[0])
+ax.set_title('Conteo de Pacientes por Grupo')
+plt.savefig(BaseDir+'001_Conteo_por_Grupo.png')
+plt.show()
+
+ax = sns.boxplot(data= codex_df, x= 'Grupo', y = 'Edad', showmeans=True,
+                 meanprops={"marker":"o",
+                       "markerfacecolor":"white",
+                       "markeredgecolor":"black",
+                      "markersize":"10"}, order=Mi_Orden).set(title=('Edad de Pacientes en cada Grupo'))
+plt.savefig(BaseDir+'002_Edad_por_Grupo.png')
+plt.show()
 
 #-------------------------------------------------------------------------------
 #  @@@ Aqui primero una preparación adicional de la base de datos
@@ -43,24 +68,48 @@ p_df.loc[(p_df.Main_Block == 'HiddenTarget_3'),'Main_Block']='Target_is_Hidden'
 pos_df = p_df.loc[ p_df['Main_Block']!='Non_relevant'] # Seleccionamos solo los relevantes
 posNI_df = pos_df.loc[ pos_df['Modalidad']=='No Inmersivo'] # posNI_df es la base para lo No Inmersivo
 
+#%%
+#-------------------------------------------------------------------------------
+
 # Revisión general
 
-home= str(Path.home()) # Obtener el directorio raiz en cada computador distinto
-BaseDir=home+"/OneDrive/2-Casper/00-CurrentResearch/001-FONDECYT_11200469/002-LUCIEN/Outputs/MorrisWMz/"
 
-sns.set(style= 'white', rc={'figure.figsize':(12,12)})
-ax = sns.boxplot(x='Grupo',y='CSE',hue='Sujeto',data=rNI_df).set(title=('CSE global todos los trials'))
-plt.savefig(BaseDir+'CSE_Global_con_Pxx.png')
+
+sns.set(style= 'white', palette='pastel',font_scale=1, rc={'figure.figsize':(12,12)})
+ax = sns.boxplot(x='Grupo',y='CSE',hue='Sujeto',data=rNI_df, order=Mi_Orden).set(title=('CSE global todos los trials'))
+plt.savefig(BaseDir+'010_CSE_Global_con_Pxx.png')
 plt.show()
 
 ax = sns.boxplot(x='Sujeto',y='CSE',hue='Grupo',data=rNI_df).set(title=('CSE global todos los trials'))
-plt.savefig(BaseDir+'CSE_Global_POR_Pxx.png')
+plt.savefig(BaseDir+'011_CSE_Global_POR_Pxx.png')
 plt.show()
+
+sns.set(style= 'white', palette='pastel',font_scale=2, rc={'figure.figsize':(12,12)})
+
+def Plot_CSE_BoxPlot(dat,Column,Condition):
+    show_df = dat.loc[rNI_df[Column] == Condition]
+    titulo='CSE por Grupo cuando '+ Column +' es ' + Condition
+    ax=sns.boxplot(data=show_df, x='Grupo', y='CSE',showmeans=True,
+                 meanprops={"marker":"o",
+                       "markerfacecolor":"white",
+                       "markeredgecolor":"black",
+                      "markersize":"10"}, order=Mi_Orden)
+    ax.set_title(titulo)
+    plt.savefig(BaseDir + '012_'+titulo+'.png')
+    plt.show()
+
+Plot_CSE_BoxPlot(rNI_df,'Main_Block','Target_is_Visible')
+show_data = rNI_df.loc[rNI_df['True_Trial']==2]
+Plot_CSE_BoxPlot(show_data,'True_Block','VisibleTarget_2')
+Plot_CSE_BoxPlot(rNI_df,'Main_Block','Target_is_Hidden')
+
+
 
 def Plot_Mwz_Learning(Scope,Bloque,dat):
     plot_df=dat.loc[dat[Scope]==Bloque]
-    ax = sns.lineplot(data=plot_df, x='True_Trial',y='CSE',hue='Grupo').set(title=('Learning_at_' + Scope + '_'+ Bloque))
-    plt.savefig(BaseDir + 'Learning_at_' + Scope + '_'+ Bloque +'.png')
+    sns.set(style='white',font_scale=2, rc={'figure.figsize': (12, 12)})
+    ax = sns.lineplot(data=plot_df, x='True_Trial',y='CSE',hue='Grupo', hue_order=Mi_Orden).set(title=('Learning_at_' + Scope + '_'+ Bloque))
+    plt.savefig(BaseDir + '020_Learning_at_' + Scope + '_'+ Bloque +'.png')
     plt.show()
 
 Plot_Mwz_Learning('True_Block','VisibleTarget_1',rNI_df)
@@ -70,6 +119,28 @@ Plot_Mwz_Learning('True_Block','HiddenTarget_1',rNI_df)
 Plot_Mwz_Learning('True_Block','HiddenTarget_2',rNI_df)
 Plot_Mwz_Learning('True_Block','HiddenTarget_3',rNI_df)
 Plot_Mwz_Learning('Main_Block','Target_is_Hidden',rNI_df)
+
+sns.set(style='white', palette='pastel', font_scale=2, rc={'figure.figsize': (12, 12)})
+
+# Mapa de Calor
+#-------------------------------------------------------------------------------
+#%%
+def MapaDeCalor(dat,Grupo,Column,Condition,Titulo):
+    show_df = dat.loc[dat[Column] == Condition]
+    show_df = show_df.loc[show_df['Grupo']==Grupo]
+    show_df.reset_index()
+    sns.set_context("paper", font_scale = 2, rc={"font.size":20,"axes.titlesize":20,"axes.labelsize":18})
+    ax = sns.kdeplot(data=show_df, x='P_position_x', y='P_position_y', cmap='coolwarm', n_levels=50, shade=True, shade_lowest=True, cbar=True)
+    ax.set(ylim=(0, 1), xlim=(0, 1), aspect=1)
+    ax.tick_params(labelsize=13)
+    ax.figure.set_size_inches(7,7)
+    ax.set_title(Titulo)
+    plt.savefig(BaseDir + '030_'+Titulo+'.png')
+    plt.show()
+
+MapaDeCalor(posNI_df,'Vestibular','Main_Block','Target_is_Hidden','Mapa de Calor_Voluntarios Sanos_Target Oculto')
+
+#%%
 
 
 

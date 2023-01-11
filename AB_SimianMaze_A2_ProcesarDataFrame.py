@@ -288,7 +288,7 @@ codex_df['Grupo'].replace(Codex_Dict['Grupo'], inplace=True)
 
 Resumen_codex_df = codex_df.groupby('Grupo')['Edad'].agg(Conteo='size', Edad_promedio='mean').reset_index()
 
-
+codex_df.to_csv('AB_SimianMaze_Z4_Resumen_Pacientes_Analizados.csv')
 m_df.to_csv('AB_SimianMaze_Z2_NaviData_con_posicion.csv')
 print('25%')
 #m_df.to_excel('AB_SimianMaze_Z2_NaviData_con_posicion.xlsx')
