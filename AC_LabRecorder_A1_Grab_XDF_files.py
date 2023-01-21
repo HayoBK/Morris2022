@@ -33,7 +33,12 @@ t= data[0]['time_stamps']
 def Extract(lst,place):
     return [item[place] for item in lst]
 
-x= Extract(data[0]['time_series'],1)
+x= Extract(data[0]['time_series'],1) # Stream pupilCapture, Canal 1: norm_pos_x
+
+MarkersAlfa = Extract(data[1]['time_series'],0) # Stream OverWatch Markes, Canal 0: Marker Primario
+MarkersBeta = Extract(data[1]['time_series'],1) # Stream pupilCapture, Canal 1: Marker Secundario
+time_stamp = data[1]['time_stamps']
+# Stream pupilCapture, Canal 1: norm_pos_x
 LSL_df = pd.DataFrame(list(zip(t, x)), columns =['LSL_timestamp', 'LSL_norm_pos_x'])
 
 test_df = test_df.loc[(test_df['gaze_timestamp']>3000) & (test_df['gaze_timestamp']<3100)]
