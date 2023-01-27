@@ -57,42 +57,73 @@ MarkersA_df = Markers_df.loc[Markers_df['OverWatch_MarkerA']!='NONE']
 # Vamos a iniciar el análisis de los Markers de OverWatch para
 # quedar con una lista confiable de marcadores
 
-TimePoint = []
-TimeStamp2 = []
-Trial = []
-LastTrial = 0
-OnGoing = False
-Ts = 0
-print('-----------------------')
-print('Inicio primera revisión')
-print('-----------------------')
+def ClearMarkers(df):
 
-for row in MarkersA_df.itertuples():
-    TP = 'NONE' # Para alimentar la lista de TimePoints
-    Tr = 1000 # Para alimentar la lista de trials. Marcando un error
-    Ts = row.OverWatch_time_stamp
-    if row.OverWatch_MarkerA.isdigit():
-        TP = 'START'
-        Tr = int(row.OverWatch_MarkerA)
-        LastTrial = Tr
-        OnGoing = True
-    if row.OverWatch_MarkerA == 'Stop':
-        if OnGoing:
-            TP = 'STOP'
-            Tr = LastTrial
-            OnGoing = False
-    if row.OverWatch_MarkerA == 'Stop confirmado':
-        if OnGoing: # Es caso de que no haya registro de un Stop previo
-            TP = 'STOP'
-            Tr = LastTrial
-            OnGoing = False
+    TimePoint = []
+    TimeStamp2 = []
+    Trial = []
+    LastTrial = 0
+    LastTrial_Length = 0
+    t1=0
+    t2=0
+    OnGoing = False
+    Ts = 0
+    print('-----------------------')
+    print('Inicio primera revisión')
+    print('-----------------------')
 
-    print(Ts,TP,Tr)
-    TimeStamp2.append(Ts)
-    TimePoint.append(TP)
-    Trial.append(Tr)
+    for row in MarkersA_df.itertuples():
+        TP = 'NONE' # Para alimentar la lista de TimePoints
+        Tr = 1000 # Para alimentar la lista de trials. Marcando un error
+        Ts = row.OverWatch_time_stamp
+        if row.OverWatch_MarkerA.isdigit():
+            TP = 'START'
+            Tr = int(row.OverWatch_MarkerA)
+            LastTrial = Tr
+            OnGoing = True
+            t1=Ts
+        if row.OverWatch_MarkerA == 'Stop':
+            if OnGoing:
+                TP = 'STOP'
+                Tr = LastTrial
+                OnGoing = False
+                t2=Ts
+                LastTrial_Length=t2-t1
+            else:
+                # Esta es la situación donde se supone que NO hay un Trial activo, pero
+                # Se encuentra una señal de stop... implica que hubo un trial
+                # no correctamente inicializado
+                if (Ts-LastTrial_Length) > t2:
+                    TimeStamp2.append(Ts-LastTrial_Length)
+                else:
+                    TimeStamp2.append(t2)
+                TimePoint.append('START')
+                Trial.append(LastTrial+1)
+                TP = 'STOP'
+                Tr = LastTrial
+                OnGoing = False
+                t2 = Ts
+                LastTrial_Length = t2 - t1
 
 
+        if row.OverWatch_MarkerA == 'Stop confirmado':
+            if OnGoing: # Es caso de que no haya registro de un Stop previo
+                TP = 'STOP'
+                Tr = LastTrial
+                OnGoing = False
+
+        print(Ts,TP,Tr)
+        TimeStamp2.append(Ts)
+        TimePoint.append(TP)
+        Trial.append(Tr)
+
+    output = pd.DataFrame(list(zip(TimeStamp2, TimePoint, Trial)),
+                          columns =['OverWatch_time_stamp', 'OverWatch_MainMarker', 'OverWatch_Trial'])
+    output = output.loc[output['OverWatch_MainMarker'] != 'NONE']
+
+    return output
+
+OverWatch_ClearedMarkers_df = ClearMarkers(MarkersA_df)
 #%%
 test_df = test_df.loc[(test_df['gaze_timestamp']>3000) & (test_df['gaze_timestamp']<3100)]
 ax = sns.lineplot(data= test_df, x= 'gaze_timestamp', y='norm_pos_x', alpha=1)

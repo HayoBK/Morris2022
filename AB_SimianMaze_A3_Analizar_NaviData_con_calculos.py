@@ -55,6 +55,7 @@ m_df.loc[(m_df.Main_Block == 'HiddenTarget_3'),'Main_Block']='Target_is_Hidden'
 
 r_df = m_df.loc[ m_df['Main_Block']!='Non_relevant'] # Seleccionamos solo los relevantes
 rNI_df = r_df.loc[ r_df['Modalidad']=='No Inmersivo'] # rNI_df es la base para lo No Inmersivo
+rRV_df = r_df.loc[ r_df['Modalidad']!='No Inmersivo'] # rRV_df es la base para lo Realidad Virtual
 
 p_df['Main_Block']=m_df['True_Block']  # Aqui vamos a recodificar los Bloques en un "Main Block" más grueso
 p_df.loc[(p_df.Main_Block == 'FreeNav'),'Main_Block']='Non_relevant'
@@ -67,13 +68,12 @@ p_df.loc[(p_df.Main_Block == 'HiddenTarget_3'),'Main_Block']='Target_is_Hidden'
 
 pos_df = p_df.loc[ p_df['Main_Block']!='Non_relevant'] # Seleccionamos solo los relevantes
 posNI_df = pos_df.loc[ pos_df['Modalidad']=='No Inmersivo'] # posNI_df es la base para lo No Inmersivo
+posRV_df = pos_df.loc[ pos_df['Modalidad']!='No Inmersivo'] # posNI_df es la base para lo Realidad Virtual
 
 #%%
 #-------------------------------------------------------------------------------
 
 # Revisión general
-
-
 
 sns.set(style= 'white', palette='pastel',font_scale=1, rc={'figure.figsize':(12,12)})
 ax = sns.boxplot(x='Grupo',y='CSE',hue='Sujeto',data=rNI_df, order=Mi_Orden).set(title=('CSE global todos los trials'))
@@ -141,9 +141,75 @@ def MapaDeCalor(dat,Grupo,Column,Condition,Titulo):
 MapaDeCalor(posNI_df,'Vestibular','Main_Block','Target_is_Hidden','Mapa de Calor_Voluntarios Sanos_Target Oculto')
 
 #%%
+# Tesis Rosario
+# Hagamos un conteo de los Trials logrados en RV.
+sns.set(style= 'white', palette='pastel',font_scale=1, rc={'figure.figsize':(12,12)})
 
+Titulo = 'Trials completados en Realidad virtual (conteo x Grupo)'
+ax = sns.countplot(data = rRV_df, x= 'Grupo', hue='Sujeto').set(title=(Titulo))
+plt.savefig(BaseDir + 'Tesis_Rosario_'+Titulo+'.png')
+plt.show()
 
+Titulo = 'Trials completados en Realidad virtual (conteo x Sujeto)'
+ax = sns.countplot(data = rRV_df, x= 'Sujeto', hue='Grupo').set(title=(Titulo))
+plt.savefig(BaseDir + 'Tesis_Rosario_'+Titulo+'.png')
+plt.show()
+#%%
+# Este pedazo de codigo es para poder jugar con los Trials logrados
 
+u = rRV_df.loc[rRV_df['Sujeto']!='P01']
+Trial_Count = u.groupby('Grupo')['Sujeto'].value_counts().to_frame()
+Trial_Count.index = Trial_Count.index.set_names(['Grupo', 'Suj'])
+Trial_Count = Trial_Count.reset_index(level=[1])
+Trial_Count.reset_index(inplace=True)
+Trial_Count= Trial_Count.rename(columns = {'Sujeto':'Trials_logrados'})
+Titulo ='Resumen De Trials Logrados por Grupo'
+ax = sns.boxplot(data= Trial_Count, x= 'Grupo', y = 'Trials_logrados', showmeans=True,
+                 meanprops={"marker":"o",
+                       "markerfacecolor":"white",
+                       "markeredgecolor":"black",
+                      "markersize":"10"}, order=Mi_Orden).set(title=(Titulo))
+plt.savefig(BaseDir + 'Tesis_Rosario_'+Titulo+'.png')
+plt.show()
+
+#%%
+
+# Ahora veamos, y primero sin filtrar por Trials Logrados, como se comportan las variables principales
+Titulo = 'CSE por Grupo y Modalidad (RV vs NI)'
+ax = sns.boxplot(data= r_df, x= 'Grupo', y = 'CSE', hue='Modalidad', showmeans=True,
+                 meanprops={"marker":"o",
+                       "markerfacecolor":"white",
+                       "markeredgecolor":"black",
+                      "markersize":"10"}, order=Mi_Orden).set(title=(Titulo))
+plt.ylim(0,350)
+plt.savefig(BaseDir + 'Tesis_Rosario_'+Titulo+'.png')
+plt.show()
+
+Titulo = 'CSE por Grupo y Modalidad (RV vs NI) con Target Hidden'
+df = r_df.loc[r_df['True_Block']=='HiddenTarget_3']
+ax = sns.boxplot(data= df, x= 'Grupo', y = 'CSE', hue='Modalidad', showmeans=True,
+                 meanprops={"marker":"o",
+                       "markerfacecolor":"white",
+                       "markeredgecolor":"black",
+                      "markersize":"10"}, order=Mi_Orden).set(title=(Titulo))
+plt.ylim(0,350) # Esto es para hacer el gráfico más legible. Es para poner el corte de CSE en 350 para
+                # la lectura del gráfico y complicar la lectura con CSE muy altos de un par
+                # de Outliers
+plt.savefig(BaseDir + 'Tesis_Rosario_'+Titulo+'.png')
+plt.show()
+
+def Plot_Mwz_Learning_L(Modalidad,Scope,Bloque,dat, Titulo):
+    plot_df=dat.loc[dat[Scope]==Bloque]
+    plot_df=plot_df.loc[dat['Modalidad']==Modalidad]
+    sns.set(style='white',font_scale=2, rc={'figure.figsize': (12, 12)})
+    ax = sns.lineplot(data=plot_df, x='True_Trial',y='CSE',hue='Grupo', hue_order=Mi_Orden).set(title=('Learning_at_' + Scope + '_'+ Bloque))
+    plt.savefig(BaseDir + 'Tesis_Rosario_'+ Titulo + '.png')
+    plt.show()
+
+Plot_Mwz_Learning_L('No Inmersivo','True_Block','HiddenTarget_3', r_df, 'Aprendizaje en No inmersivo')
+Plot_Mwz_Learning_L('Realidad Virtual','True_Block','HiddenTarget_3', r_df, 'Aprendizaje en No inmersivo')
+
+#%%
 #-------------------------------------------------------------------------------
 # Realizaremos estudio de caso a caso.
 

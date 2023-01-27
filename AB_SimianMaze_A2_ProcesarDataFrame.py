@@ -226,13 +226,6 @@ short_df = Interpolar_Row_TT7_Missing(short_df,'P01','VisibleTarget_2',3)
 
 
 
-
-
-
-
-
-
-
 #Repetir V2 desde V1 en P05
 Data= short_df
 Data = Data.reset_index(drop=True)
