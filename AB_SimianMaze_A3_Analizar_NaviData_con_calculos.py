@@ -157,7 +157,14 @@ plt.show()
 #%%
 # Este pedazo de codigo es para poder jugar con los Trials logrados
 
-u = rRV_df.loc[rRV_df['Sujeto']!='P01']
+u = rRV_df.loc[rRV_df['Sujeto']!='P01']   # Esto es como P01 tiene menos trials por haber sido el piloto, lo eliminamos del analisis
+
+#Más elegante para poder eliminar Sujetos del Analisis que queramos limpiar:
+
+BanishList=['P01']
+clear_df = r_df[~r_df['Sujeto'].isin(BanishList)] # Aqui tendríamos una base de datos sin los
+                    # sujetos de la Banish List... ojo aún no ocupo clear_df
+
 Trial_Count = u.groupby('Grupo')['Sujeto'].value_counts().to_frame()
 Trial_Count.index = Trial_Count.index.set_names(['Grupo', 'Suj'])
 Trial_Count = Trial_Count.reset_index(level=[1])
