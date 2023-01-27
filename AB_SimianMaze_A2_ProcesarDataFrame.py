@@ -81,7 +81,10 @@ Banish_List.extend([1201,2000,2100,1901])
 Banish_List.extend([2700,3000,3100,3300,3400,3404,3005])
 Banish_List.extend([3600,2901,2902,2903,4500,8500,7600,9300,11711,13102,13100,13600,14100,14300,14500,14600])
 #a partir de P15 en adelante
-Banish_List.extend([15500,15900,15604,15605,16600,22400,23606,24600,25400,25500,27604,27405,28500,])
+Banish_List.extend([15500,15900,15604,15605,16600,22400,23606,24600,25400,25500,27604,27405,28500])
+#a partir de P29
+Banish_List.extend([30009,30010,30011,30400,31007,30608,31101,31302,30501,30802,32200,32506,34000,33900,34400,35100,35300,35703,36500,36600,37006,37910])
+
 
 # Aqui vamos a hacer una lista de los trials que eliminamos.
 Banished_short_df = short_df[short_df['Trial_Unique_ID'].isin(Banish_List)]
@@ -244,7 +247,7 @@ short_df = DataA.append(Copy_Row).append(DataB).reset_index(drop=True)
 #-------------------------------------------------------------------------------------------------------------
 
 # Ahora enriquecemos la base de datos con datos de los pacientes
-
+# OJO ROSARIO ESTO LO PUEDES USAR PARA ENRIQUECER CON AVERSIVO/HEDONICO cualquier otro dato...
 #-------------------------------------------------------------------------------------------------------------
 
 codex = pd.read_excel('AA_CODEX.xlsx',index_col=0)
