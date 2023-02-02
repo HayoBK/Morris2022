@@ -48,7 +48,7 @@ plt.show()
 
 #%%
 time_stamp = data[1]['time_stamps']
-MarkersAlfa = Extract(data[1]['time_series'],0) # Stream OverWatch Markes, Canal 0: Marker Primario
+MarkersAlfa = Extract(data[1]['time_series'],0) # Stream OverWatch Markers, Canal 0: Marker Primario
 MarkersBeta = Extract(data[1]['time_series'],1) # Stream pupilCapture, Canal 1: Marker Secundario
 Markers_df = pd.DataFrame(list(zip(time_stamp, MarkersAlfa, MarkersBeta)), columns =['OverWatch_time_stamp', 'OverWatch_MarkerA', 'OverWatch_MarkerB'])
 MarkersA_df = Markers_df.loc[Markers_df['OverWatch_MarkerA']!='NONE']
@@ -82,6 +82,13 @@ def ClearMarkers(df):
             LastTrial = Tr
             OnGoing = True
             t1=Ts
+        if row.OverWatch_MarkerA == 'Falso Stop':
+            if (OnGoing == False) and (len(Trial)>0):
+                OnGoing = True
+                del TimeStamp2[-1]
+                del TimePoint[-1]
+                del Trial[-1]
+
         if row.OverWatch_MarkerA == 'Stop':
             if OnGoing:
                 TP = 'STOP'
@@ -96,9 +103,11 @@ def ClearMarkers(df):
                 if (Ts-LastTrial_Length) > t2:
                     TimeStamp2.append(Ts-LastTrial_Length)
                 else:
-                    TimeStamp2.append(t2)
+                    Lapse90=(Ts-t2)*0.9
+                    TimeStamp2.append(Ts-Lapse90)
                 TimePoint.append('START')
-                Trial.append(LastTrial+1)
+                LastTrial+=1
+                Trial.append(LastTrial)
                 TP = 'STOP'
                 Tr = LastTrial
                 OnGoing = False
@@ -120,10 +129,27 @@ def ClearMarkers(df):
     output = pd.DataFrame(list(zip(TimeStamp2, TimePoint, Trial)),
                           columns =['OverWatch_time_stamp', 'OverWatch_MainMarker', 'OverWatch_Trial'])
     output = output.loc[output['OverWatch_MainMarker'] != 'NONE']
-
     return output
 
-OverWatch_ClearedMarkers_df = ClearMarkers(MarkersA_df)
+OverWatch_ClearedMarkers_df = ClearMarkers(MarkersA_df) # Aqui construimos la base de datos con los marcadores con todas las
+            # ... correcciones interpretativas identificadas hasta el momento.
+
+codex = pd.read_excel('AB_OverWatch_Codex.xlsx',index_col=0) # Aqui estoy cargando como DataFrame la lista de códigos que voy a usar, osea, los datos del diccionario. Es super
+# imporatante el index_col=0 porque determina que la primera columna es el indice del diccionario, el valor que usaremos para guiar los reemplazos.
+Codex_Dict = codex.to_dict('series') # Aqui transformo esa Dataframe en una serie, que podré usar como diccionario
+df= OverWatch_ClearedMarkers_df  # Esto es solo de flojo, para escribir menos uso la variable "df" para copiar la DataFrame que quiero enriquecer que es de nombre más larga
+df['MWM_Block'] = df['OverWatch_Trial'] # Aqui empieza la magia, creo una nueva columna llamada MWM_Bloque, que es una simple copia de la columna OverWatch_Trial. De momento
+# son identicas
+df['MWM_Block'].replace(Codex_Dict['MWM_Bloque'], inplace=True) # Y aqui ocurre la magia: estoy reemplazando cada valor de la columna recien creada, ocupando el diccionario que
+# armamos como guia para hacer el reemplazo
+
+df['MWM_Trial'] = df['OverWatch_Trial']
+df['MWM_Trial'].replace(Codex_Dict['MWM_Trial'], inplace=True)
+
+df = df.reset_index(drop=True)
+OverWatch_ClearedMarkers_df = df
+print('Si todo sale bien este numero debiese ser 66 -->', len(df.index))
+
 #%%
 test_df = test_df.loc[(test_df['gaze_timestamp']>3000) & (test_df['gaze_timestamp']<3100)]
 ax = sns.lineplot(data= test_df, x= 'gaze_timestamp', y='norm_pos_x', alpha=1)
