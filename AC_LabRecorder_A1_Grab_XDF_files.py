@@ -16,6 +16,7 @@ import os
 import pyxdf
 import seaborn as sns   #Estetica de gráficos
 import matplotlib.pyplot as plt    #Graficos
+import numpy as np
 
 home= str(Path.home()) # Obtener el directorio raiz en cada computador distinto
 BaseDir=home+"/OneDrive/2-Casper/00-CurrentResearch/001-FONDECYT_11200469/002-LUCIEN/SUJETOS/"
@@ -41,10 +42,11 @@ def Extract(lst,place):
 
 t= data[0]['time_stamps']
 x= Extract(data[0]['time_series'],1) # Stream pupilCapture, Canal 1: norm_pos_x
-LSL_df = pd.DataFrame(list(zip(t, x)), columns =['LSL_timestamp', 'LSL_norm_pos_x'])
-LSL_df = LSL_df.loc[(LSL_df['LSL_timestamp']>3000) & (LSL_df['LSL_timestamp']<3100)]
-ax = sns.lineplot(data= LSL_df, x= 'LSL_timestamp', y='LSL_norm_pos_x', alpha=0.3)
-plt.show()
+y= Extract(data[0]['time_series'],2)
+LSL_df = pd.DataFrame(list(zip(t, x, y)), columns =['LSL_timestamp', 'LSL_norm_pos_x','LSL_norm_pos_x'])
+#LSL_df = LSL_df.loc[(LSL_df['LSL_timestamp']>3000) & (LSL_df['LSL_timestamp']<3100)]
+#ax = sns.lineplot(data= LSL_df, x= 'LSL_timestamp', y='LSL_norm_pos_x', alpha=0.3)
+#plt.show()
 
 #%%
 time_stamp = data[1]['time_stamps']
@@ -133,7 +135,20 @@ def ClearMarkers(df):
 
 OverWatch_ClearedMarkers_df = ClearMarkers(MarkersA_df) # Aqui construimos la base de datos con los marcadores con todas las
             # ... correcciones interpretativas identificadas hasta el momento.
+df= OverWatch_ClearedMarkers_df
+df = df.reset_index(drop=True)
+print('Si todo sale bien este numero debiese ser 66 -->', len(df.index))
 
+inicios = df[df['OverWatch_MainMarker'] == 'START']['OverWatch_time_stamp'].reset_index(drop=True)
+finales = df[df['OverWatch_MainMarker'] == 'STOP']['OverWatch_time_stamp'].reset_index(drop=True)
+trials = pd.DataFrame({'Start':inicios, 'End':finales})
+
+LSL_df.rename(columns = {'LSL_timestamp':'timestamp'},inplace=True)
+trial_labels = list(range(1,34))
+trial_labels = np.array(trial_labels)
+bins = pd.IntervalIndex.from_tuples(list(zip(trials['Start'], trials['End'])), closed = 'left')
+LSL_df['OW_Trial'] = pd.cut(LSL_df['timestamp'],bins).map(dict(zip(bins,trial_labels)))
+#LSL_df['OW_Trial_info'] = LSL_df['OW_Trial'].apply(lambda x: trials.iloc[x])
 codex = pd.read_excel('AB_OverWatch_Codex.xlsx',index_col=0) # Aqui estoy cargando como DataFrame la lista de códigos que voy a usar, osea, los datos del diccionario. Es super
 # imporatante el index_col=0 porque determina que la primera columna es el indice del diccionario, el valor que usaremos para guiar los reemplazos.
 Codex_Dict = codex.to_dict('series') # Aqui transformo esa Dataframe en una serie, que podré usar como diccionario
@@ -146,9 +161,10 @@ df['MWM_Block'].replace(Codex_Dict['MWM_Bloque'], inplace=True) # Y aqui ocurre 
 df['MWM_Trial'] = df['OverWatch_Trial']
 df['MWM_Trial'].replace(Codex_Dict['MWM_Trial'], inplace=True)
 
-df = df.reset_index(drop=True)
+
 OverWatch_ClearedMarkers_df = df
-print('Si todo sale bien este numero debiese ser 66 -->', len(df.index))
+
+
 
 #%%
 test_df = test_df.loc[(test_df['gaze_timestamp']>3000) & (test_df['gaze_timestamp']<3100)]
