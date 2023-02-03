@@ -154,7 +154,7 @@ print('Si todo sale bien este numero debiese ser 66 -->', len(df.index))
 test_df = test_df.loc[(test_df['gaze_timestamp']>3000) & (test_df['gaze_timestamp']<3100)]
 ax = sns.lineplot(data= test_df, x= 'gaze_timestamp', y='norm_pos_x', alpha=1)
 
-
+#
 
 
 print('hola')
