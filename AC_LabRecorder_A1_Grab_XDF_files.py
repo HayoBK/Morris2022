@@ -24,6 +24,32 @@ BaseDir=home+"/OneDrive/2-Casper/00-CurrentResearch/001-FONDECYT_11200469/002-LU
 # Aqui incluimos un csv de pupil Labs de prueba...
 test_df = pd.read_csv('test_gaze.csv')
 
+#Vamos a buscar todos los archivos de datos del Pupil Labs de Felipe
+searchfiles = home + "/OneDrive/2-Casper/00-CurrentResearch/001-FONDECYT_11200469/004 - Alimento para LUCIEN/Pupil_labs_Faundez/*.csv"
+Pupil_files = glob2.glob(searchfiles) #obtiene una LISTA de todos los archivos que calcen con "searchfiles"
+Pupil_files = sorted(Pupil_files) # los ordena alfabeticamente
+PxxList =[]
+Df_List = []
+for Pupil_f in Pupil_files:
+    head, tail = os.path.split(Pupil_f) #Esto es para obtener solo el nombre del archivo y perder su directorio
+    CodigoPxx = str(tail[0:3])
+    print('Adquiriendo datos de Pupil.csv para sujeto ',CodigoPxx)
+    PxxList.append(CodigoPxx)
+    t_df = pd.read_csv(Pupil_f)
+    t_df.insert(0, 'Sujeto', CodigoPxx)
+    Df_List.append(t_df)
+    print('Terminé con ',CodigoPxx)
+
+Pupil_df = pd.concat(Df_List)
+
+for P in PxxList:
+    Dir = BaseDir + P
+    pattern = Dir + "/LSL_LAB/**/*NI*.xdf"
+    XDF_files = glob2.glob(pattern)
+    for x in XDF_files:
+        head, tail = os.path.split(x) #Esto es para obtener solo el nombre del archivo y perder su directorio
+        print(P,tail)
+
 # Aqui obtenemos un XDF de Lab Recorder de prueba
 FileName = BaseDir + 'P05/LSL_LAB/ses-NI/eeg/sub-P05_ses-NI_task-Default_run-001_eeg.xdf'
 
