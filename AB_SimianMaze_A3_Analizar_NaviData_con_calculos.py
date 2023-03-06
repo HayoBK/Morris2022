@@ -71,6 +71,33 @@ posNI_df = pos_df.loc[ pos_df['Modalidad']=='No Inmersivo'] # posNI_df es la bas
 posRV_df = pos_df.loc[ pos_df['Modalidad']!='No Inmersivo'] # posNI_df es la base para lo Realidad Virtual
 
 #%%
+show_df = m_df.loc[ m_df['True_Block']=='HiddenTarget_2']
+
+ax= sns.barplot(data=show_df, x='Grupo', y='CSE', hue='Modalidad')
+plt.show()
+
+#%%
+show_df = m_df.loc[ m_df['Grupo']=='Voluntario Sano']
+sns.set(style= 'white', palette='pastel',font_scale=2, rc={'figure.figsize':(21,12)})
+ax=sns.barplot(data=show_df, x='True_Block', y='CSE', hue='Modalidad').set(title=('Voluntario Sano'))
+plt.show()
+
+show_df = m_df.loc[ m_df['Grupo']=='MPPP']
+sns.set(style= 'white', palette='pastel',font_scale=2, rc={'figure.figsize':(21,12)})
+ax=sns.barplot(data=show_df, x='True_Block', y='CSE', hue='Modalidad').set(title=('MPPP'))
+plt.show()
+
+show_df = m_df.loc[ m_df['Grupo']=='Vestibular']
+sns.set(style= 'white', palette='pastel',font_scale=2, rc={'figure.figsize':(21,12)})
+ax=sns.barplot(data=show_df, x='True_Block', y='CSE', hue='Modalidad').set(title=('Vestibular'))
+plt.show()
+#%%
+BanishList=['P01','P02','P03','P04']
+clear_df = m_df[~m_df['Sujeto'].isin(BanishList)]
+ax= sns.barplot(data=clear_df, x='True_Block', y='True_Trial', hue='Grupo')
+plt.show()
+
+#%%
 #-------------------------------------------------------------------------------
 
 # Revisión general
