@@ -56,8 +56,9 @@ def ClearMarkers(df):
             confirmedSTOP = False
 
             if Tr == LastTrial:
+                print('Borrados ', TimeStamp2[-2], TimeStamp2[-1])
                 TimeStamp2 = TimeStamp2[:len(TimeStamp2) - 2]
-                print('Borrados ',TimeStamp2[-2],TimeStamp2[-1])
+
                 TimePoint = TimePoint[:len(TimePoint) - 2]
                 Trial = Trial[:len(Trial) - 2]
             LastTrial = Tr
